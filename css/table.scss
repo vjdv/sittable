@@ -1,0 +1,131 @@
+//@import "./../../global.scss";
+.sittable {
+  max-width: 100%;
+  display: flex;
+  flex-flow: column;
+  overflow: hidden;
+  table {
+    border-collapse: collapse;
+    display: block;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  thead {
+    display: block;
+    min-height: 22px;
+    overflow: hidden;
+    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);
+    tr {
+      background-color: $morado;
+      th {
+        font-size: 0.8rem;
+        position: relative;
+        font-weight: bold;
+        color: #fff;
+        user-select: none;
+        text-align: center;
+        border: 1px solid #ccc;
+        a {
+          color: inherit;
+          text-decoration: none;
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+          }
+          &.active {
+            background-color: rgba(0, 0, 0, 0.5);
+          }
+        }
+        .grip {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: 4px;
+          cursor: col-resize;
+          &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+    }
+  }
+  > div {
+    overflow: auto;
+    flex: 1;
+    min-height: 100px;
+    position: relative;
+    border: 1px solid #ccc;
+    border-top: none;
+    .wide {
+      width: 100%;
+      height: 0;
+    }
+    tbody {
+      font-size: 0.9rem;
+      line-height: 15px;
+      background-color: #fff;
+      tr {
+        border-bottom: 1px solid #ccc;
+        &:nth-child(odd) {
+          background-color: #fafafa;
+        }
+        &:nth-child(even) {
+          background-color: #fff;
+        }
+        &:hover {
+          background-color: #e0e0e0;
+        }
+        &.highlighted {
+          background-color: #fff5e7;
+        }
+        &.selected {
+          background-color: #aaa;
+        }
+        &:last-child {
+          border-bottom: none;
+        }
+        td {
+          transition: min-width 300ms linear, max-width 300ms linear;
+          border-right: 1px solid #ccc;
+          &:last-child {
+            border-right: none;
+          }
+        }
+      }
+    }
+    .info {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      padding: 30px 10px;
+      background-color: rgba(255, 255, 255, 0.3);
+      font-size: 1.1rem;
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      z-index: 1;
+      > * {
+        padding: 10px;
+      }
+    }
+  }
+  th,
+  td {
+    padding: 5px;
+    white-space: pre-line;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &.small {
+    th {
+      font-size: 0.7rem;
+      padding: 0;
+    }
+    td {
+      font-size: 0.8rem;
+      padding: 4px 3px;
+    }
+  }
+}
