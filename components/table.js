@@ -3,7 +3,7 @@ import React from "react";
 import Column from "./column";
 import PropTypes from "prop-types";
 
-export default class SitTable extends React.Component {
+export default class Table extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,11 +19,9 @@ export default class SitTable extends React.Component {
     this.header = null;
     this.body = null;
     //Variables públicas
-    this.selectedRow = null;
     this.onClick = props.onClick;
     this.onChange = props.onChange;
-    this.highlight = o => false;
-    if (props.highlight) this.highlight = props.highlight;
+    this.highlight = props.highlight;
     //Formatos para números
     this.numberformats = {
       mount: new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -31,19 +29,8 @@ export default class SitTable extends React.Component {
       titles: new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }),
       rate: new Intl.NumberFormat("en-US", { minimumFractionDigits: 8, maximumFractionDigits: 8 })
     };
-    //Childs
-    React.Children.forEach(props.children, child => {
-      console.log(child);
-      if (child.type === Column) {
-        const x = Column(child.props);
-        x.align = "dddd";
-        console.log(x);
-      }
-    });
-    console.log(this.col);
   }
   render() {
-    this.deselect();
     this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
     this.selectable = this.props.selectable === true && this.datax.length > 0;
     const classes = ["sittable"];
@@ -152,13 +139,28 @@ export default class SitTable extends React.Component {
     });
     this.setState({ data, subdata1: null, subdata2: null });
   }
-  dataToTd(column, object, i) {
+  get selectedItem() {
+    const sdata = this.state.data.filter(o => o.stb_selected);
+    return sdata[0] || null;
+  }
+  set selectedItem(item) {
+    this.state.data.forEach(o => (o.stb_selected = o === item));
+    this.forceUpdate();
+  }
+  get selectedIndex() {
+    const obj = this.selectedItem;
+    return obj === null ? -1 : obj.stb_oid;
+  }
+  set selectedIndex(i) {
+    this.state.data.forEach(o => (o.stb_selected = o.stb_oid === i));
+    this.forceUpdate();
+  }
+  renderTd(column, object, i) {
     var val = object[column.dataField] !== undefined ? object[column.dataField] : null;
     if (column.dataFunc) {
       val = column.dataFunc(val, object);
     }
     if (column.numberFormat && this.numberformats[column.numberFormat]) {
-      column.align = "right";
       if (val === undefined || val === null || val === "") val = "";
       else val = this.numberformats[column.numberFormat].format(val);
     }
@@ -168,22 +170,16 @@ export default class SitTable extends React.Component {
       </td>
     );
   }
-  dataToTr(object, i) {
+  renderTr(object, i) {
     const classes_array = [];
     if (object.stb_selected) classes_array.push("selected");
     if (this.highlight(object)) classes_array.push("highlighted");
     const classes_str = classes_array.join(" ");
     return (
       <tr data-row={i} key={i} data-oid={object.stb_oid} className={classes_str} style={{}}>
-        {this.state.columns.map((column, i) => this.dataToTd(column, object, i))}
+        {this.state.columns.map((column, i) => this.renderTd(column, object, i))}
       </tr>
     );
-  }
-  deselect() {
-    if (this.selectedRow !== null) {
-      this.selectedRow.className = "";
-      this.selectedRow = null;
-    }
   }
   doubleClick = miliseconds => {
     var threshold = miliseconds || 450;
@@ -234,27 +230,12 @@ export default class SitTable extends React.Component {
     this.filter();
   }
   renderData() {
-    return this.datax.map((d, i) => this.dataToTr(d, i));
-  }
-  resetSelection() {
-    if (this.selectedRow === null) {
-      this.selectedRow.className = "";
-      this.selectedRow = null;
-    }
+    return this.datax.map((d, i) => this.renderTr(d, i));
   }
   resizeCol(i, width) {
     this.state.columns[i].width = width;
     this.forceUpdate();
   }
-  selectedIndex = () => {
-    const odata = this.selectedItem();
-    if (odata === null) return -1;
-    else return odata.stb_oid;
-  };
-  selectedItem = () => {
-    const sdata = this.state.data.filter(o => o.stb_selected);
-    return sdata[0] || null;
-  };
   selectionHandler = e => {
     if (this.selectable === false) return;
     var tr = e.target;
@@ -265,12 +246,13 @@ export default class SitTable extends React.Component {
       tr = tr.parentElement;
     }
     const oid = Number(tr.dataset.oid);
-    if (this.selectedIndex() !== oid) {
+    if (this.selectedIndex !== oid) {
       this.state.data.forEach((o, i) => (o.stb_selected = i === oid));
       this.forceUpdate();
-      if (this.onChange) this.onChange(this.selectedItem(), oid, td.cellIndex, tr);
+      this.selectedIndex = oid;
+      this.onChange(this.selectedItem, oid, td.cellIndex, tr);
     }
-    if (this.onClick) this.onClick(this.selectedItem(), oid, td.cellIndex, tr);
+    this.onClick(this.selectedItem, oid, td.cellIndex, tr);
   };
   sortBy(col, anchor) {
     var data_origin = this.state.subdata1 || this.state.data;
@@ -324,40 +306,42 @@ export default class SitTable extends React.Component {
   }
   static getDerivedStateFromProps(props, state) {
     var tablewidth = 0;
-    const columns = React.Children.map(props.children, (col, i) => {
-      if (col.props.visible === false) return null;
-      return {
-        header: col.props.header || col.props.label || "Column " + i,
-        width: col.props.width || 120,
-        dataField: col.props.dataField,
-        dataFunc: col.props.dataFunc,
-        numberFormat: col.props.numberFormat,
-        align: col.props.align || "left",
-        resizable: col.props.resizable === undefined ? true : col.props.resizable == true,
-        sortable: col.props.sortable === undefined ? true : col.props.sortable == true,
-        filterable: col.props.filterable === undefined ? true : col.props.filterable == true,
-        filtering: false
-      };
+    const newstate = {};
+    const columns = [];
+    React.Children.forEach(props.children, child => {
+      if (child.type === Column) columns.push(Column(child.props));
     });
-    if (state.columns !== null && state.columns.length === columns.length) {
-      columns.forEach((col, i) => {
-        col.width = state.columns[i].width;
-        col.filtering = state.columns[i].filtering;
-      });
+    if (state.columns === null || state.columns.length !== columns.length) {
+      columns.forEach(col => (tablewidth += col.width));
+      newstate.tablewidth = tablewidth;
+      newstate.columns = columns;
+    } else {
+      state.columns.forEach(col => (tablewidth += col.width));
+      if (tablewidth !== state.tablewidth) newstate.tablewidth = tablewidth;
     }
-    columns.forEach(col => (tablewidth += col.width));
-    const newstate = { columns, tablewidth };
-    if (props.data !== undefined && state.data !== props.data) {
-      var data = props.data || [];
-      data.forEach((o, i) => {
+    if (props.data !== undefined && props.data !== state.data) {
+      props.data.forEach((o, i) => {
         o.stb_oid = i;
         o.stb_selected = false;
       });
-      newstate.data = data;
+      newstate.data = props.data;
       newstate.subdata1 = null;
       newstate.subdata2 = null;
     }
     return newstate;
   }
 }
-var count = 0;
+
+Table.propTypes = {
+  selectable: PropTypes.bool,
+  flexible: PropTypes.bool,
+  data: PropTypes.array,
+  highlight: PropTypes.func
+};
+Table.defaultProps = {
+  selectable: false,
+  flexible: false,
+  onClick: () => undefined,
+  onChange: () => undefined,
+  highlight: () => false
+};
