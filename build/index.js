@@ -96,6 +96,95 @@ Column.defaultProps = {
   resizable: true
 };
 
+function styleInject(css, ref) {
+  if ( ref === void 0 ) ref = {};
+  var insertAt = ref.insertAt;
+
+  if (!css || typeof document === 'undefined') { return; }
+
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.type = 'text/css';
+
+  if (insertAt === 'top') {
+    if (head.firstChild) {
+      head.insertBefore(style, head.firstChild);
+    } else {
+      head.appendChild(style);
+    }
+  } else {
+    head.appendChild(style);
+  }
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    overflow: hidden;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15); }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36; }\n      .package_sittable__1lHHt thead tr th {\n        font-size: 0.8rem;\n        position: relative;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt > div {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border: 1px solid #ccc;\n    border-top: none; }\n    .package_sittable__1lHHt > div tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff; }\n      .package_sittable__1lHHt > div tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt > div tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt > div tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt > div tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt > div tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt > div tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt > div tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt > div .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt > div .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
+var s = { "sittable": "package_sittable__1lHHt", "active": "package_active__mgXBC", "grip": "package_grip__3vk4p", "highlighted": "package_highlighted__1YUtH", "selected": "package_selected__3oqFx", "info": "package_info__3UY8x", "small": "package_small__3j1R3", "wide": "package_wide__ri8e4" };
+styleInject(css);
+
+function createCommonjsModule(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var classnames = createCommonjsModule(function (module) {
+/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ('object' !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (typeof undefined === 'function' && typeof undefined.amd === 'object' && undefined.amd) {
+		// register as 'classnames', consistent with npm package name
+		undefined('classnames', [], function () {
+			return classNames;
+		});
+	} else {
+		window.classNames = classNames;
+	}
+}());
+});
+
 var Table = function (_React$Component) {
   inherits(Table, _React$Component);
 
@@ -166,13 +255,10 @@ var Table = function (_React$Component) {
 
       this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
       this.selectable = this.props.selectable === true && this.datax.length > 0;
-      var classes = ["sittable"];
-      if (this.props.flexible === true) classes.push("flexible");
-      if (this.props.small === true) classes.push("small");
       var style = Object.assign({ width: this.state.tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
       return React.createElement(
         "div",
-        { className: classes.join(" "), style: style },
+        { className: classnames(s.sittable, this.props.small && "small", this.props.flexible && "flexible"), style: style },
         React.createElement(
           "table",
           null,
@@ -213,7 +299,7 @@ var Table = function (_React$Component) {
             } },
           React.createElement("div", { ref: function ref(o) {
               return _this2.divwidth = o;
-            }, className: "wide" }),
+            }, className: s.wide }),
           this.datax.length === 0 && this.props.loading !== true && React.createElement(
             "div",
             { className: "info" },
@@ -537,36 +623,6 @@ Table.defaultProps = {
     return false;
   }
 };
-
-function styleInject(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (!css || typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
-
-var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    overflow: hidden;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15); }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36; }\n      .package_sittable__1lHHt thead tr th {\n        font-size: 0.8rem;\n        position: relative;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt > div {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border: 1px solid #ccc;\n    border-top: none; }\n    .package_sittable__1lHHt > div .package_wide__ri8e4 {\n      width: 100%;\n      height: 0; }\n    .package_sittable__1lHHt > div tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff; }\n      .package_sittable__1lHHt > div tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt > div tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt > div tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt > div tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt > div tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt > div tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt > div tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt > div .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt > div .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n";
-styleInject(css);
 
 exports.Table = Table;
 exports.Column = Column;

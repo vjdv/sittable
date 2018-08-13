@@ -2,6 +2,8 @@ import React from "react";
 //import CloseableInput from "./../closeableinput";
 import Column from "./column";
 import PropTypes from "prop-types";
+import s from "./../css/package.scss";
+import cx from "classnames";
 
 export default class Table extends React.Component {
   constructor(props) {
@@ -33,12 +35,9 @@ export default class Table extends React.Component {
   render() {
     this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
     this.selectable = this.props.selectable === true && this.datax.length > 0;
-    const classes = ["sittable"];
-    if (this.props.flexible === true) classes.push("flexible");
-    if (this.props.small === true) classes.push("small");
     var style = Object.assign({ width: this.state.tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
     return (
-      <div className={classes.join(" ")} style={style}>
+      <div className={cx(s.sittable, this.props.small && "small", this.props.flexible && "flexible")} style={style}>
         <table>
           <thead ref={h => (this.header = h)}>
             <tr>
@@ -65,12 +64,13 @@ export default class Table extends React.Component {
           </thead>
         </table>
         <div ref={o => (this.divbody = o)}>
-          <div ref={o => (this.divwidth = o)} className="wide" />
+          <div ref={o => (this.divwidth = o)} className={s.wide} />
           {this.datax.length === 0 && this.props.loading !== true && <div className="info">Sin información para mostrar</div>}
           {this.props.loading === true && (
             <div className="info">
               <span>
-                <span className="icon-spin5 animate-spin" />Espere
+                <span className="icon-spin5 animate-spin" />
+                Espere
               </span>
             </div>
           )}
