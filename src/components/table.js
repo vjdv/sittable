@@ -4,6 +4,7 @@ import Column from "./column";
 import PropTypes from "prop-types";
 import s from "./../css/package.scss";
 import cx from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default class Table extends React.Component {
   constructor(props) {
@@ -43,7 +44,8 @@ export default class Table extends React.Component {
             <tr>
               {this.state.columns.map((col, i) => (
                 <th style={{ minWidth: col.width, maxWidth: col.width }} data-col={i} key={i}>
-                  {col.sortable ? <a className="icon-sort" /> : null}
+                  {col.sortable && <FontAwesomeIcon icon={"sort" + (this.sortColumn === i ? (this.sortAsc ? "-up" : "-down") : "")} data-col={i} onClick={this.sort} />}
+                  {col.sortable && " "}
                   {col.filtering ? (
                     <CloseableInput
                       placeholder={col.header}
@@ -85,10 +87,7 @@ export default class Table extends React.Component {
     var thrzelem;
     var thrzoffs;
     this.header.onmousedown = e => {
-      if (e.target.nodeName === "A" && e.target.className.indexOf("icon-sort") === 0) {
-        var col = e.target.parentElement.dataset.col;
-        this.sortBy(this.state.columns[Number(col)].dataField, e.target);
-      } else if (e.target.nodeName === "A" && e.target.className === "icon-filter") {
+      if (e.target.nodeName === "A" && e.target.className === "icon-filter") {
         var col = e.target.parentElement.dataset.col;
         this.state.columns[col].filtering = true;
         this.forceUpdate();
@@ -131,7 +130,9 @@ export default class Table extends React.Component {
       headtds[i].style.maxWidth = width + "px";
     });
   }
-  get data() {}
+  get data() {
+    return this.state.data;
+  }
   set data(data) {
     data.forEach((o, i) => {
       o.stb_oid = i;
@@ -254,42 +255,37 @@ export default class Table extends React.Component {
     }
     this.onClick(this.selectedItem, oid, td.cellIndex, tr);
   };
-  sortBy(col, anchor) {
+  sort = e => {
+    while (e.target.tagName !== "svg") e.target = e.target.parentNode;
+    var col = Number(e.target.dataset.col);
     var data_origin = this.state.subdata1 || this.state.data;
     var data_ordered = [];
     for (var i = 0; i < data_origin.length; i++) {
       data_ordered[i] = data_origin[i];
     }
-    if (this.lastSort !== undefined && this.lastSort !== anchor) {
-      this.lastSort.className = "icon-sort";
-    }
     if (this.sortColumn === undefined || this.sortColumn !== col) {
-      this.sortMode = "ASC";
+      this.sortAsc = true;
       this.sortColumn = col;
-      anchor.className = "icon-sort-up";
-    } else if (this.sortColumn === col && this.sortMode === "ASC") {
-      this.sortMode = "DESC";
-      anchor.className = "icon-sort-down";
+    } else if (this.sortColumn === col && this.sortAsc) {
+      this.sortAsc = false;
     } else {
-      this.sortMode = undefined;
       this.sortColumn = undefined;
-      anchor.className = "icon-sort";
       this.setState({ subdata2: data_origin });
       return;
     }
+    col = this.state.columns[col].dataField;
     //Burbuja
     for (var i = data_ordered.length - 1; i >= 0; i--) {
       for (var j = 1; j <= i; j++) {
-        if ((this.sortMode === "ASC" && data_ordered[j][col] < data_ordered[j - 1][col]) || (this.sortMode === "DESC" && data_ordered[j][col] > data_ordered[j - 1][col])) {
+        if ((this.sortAsc && data_ordered[j][col] < data_ordered[j - 1][col]) || (!this.sortAsc && data_ordered[j][col] > data_ordered[j - 1][col])) {
           var tmp = data_ordered[j];
           data_ordered[j] = data_ordered[j - 1];
           data_ordered[j - 1] = tmp;
         }
       }
     }
-    this.lastSort = anchor;
     this.setState({ subdata2: data_ordered });
-  }
+  };
   tabularData() {
     var tmp = "";
     const data = this.state.subdata2 || this.state.subdata1 || this.state.data;
