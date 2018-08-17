@@ -1562,8 +1562,8 @@ FontAwesomeIcon.defaultProps = {
 
 var convertCurry = convert.bind(null, React.createElement);
 
-var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n";
-var s$1 = { "filterinput": "filterinput_filterinput__2bhbP" };
+var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n\n.filterinput_button__BOFcN {\n  margin-left: 0.4rem;\n  color: #ddd; }\n  .filterinput_button__BOFcN:hover {\n    cursor: pointer;\n    color: #fff; }\n";
+var s$1 = { "filterinput": "filterinput_filterinput__2bhbP", "button": "filterinput_button__BOFcN" };
 styleInject(css$2);
 
 var FilterInput = function (_React$Component) {
@@ -1581,11 +1581,14 @@ var FilterInput = function (_React$Component) {
       }));
     };
 
-    _this.state = { options: [], selected: [] };
+    _this.state = { options: [], selected: [], show: true };
     props.options.forEach(function (o) {
       if (_this.state.options.indexOf(o) == -1) _this.state.options.push(o);
     });
+    _this.filterType = props.filterType;
     _this.onChange = props.onChange;
+    _this.onClose = props.onClose;
+    if (_this.state.options.length <= 10) _this.filterType = "checkbox";
     return _this;
   }
 
@@ -1594,7 +1597,36 @@ var FilterInput = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      if (this.props.filterType === "checkbox") {}
+      if (this.filterType === "checkbox") {
+        return React.createElement(
+          "div",
+          { className: s$1.filterinput },
+          this.props.placeholder,
+          React.createElement(FontAwesomeIcon, { className: s$1.button, icon: "angle" + (this.state.show ? "-down" : "-up"), onClick: function onClick() {
+              return _this2.setState({ show: !_this2.state.show });
+            } }),
+          React.createElement(FontAwesomeIcon, { className: s$1.button, icon: "times", onClick: function onClick() {
+              return _this2.onClose();
+            } }),
+          React.createElement(
+            "div",
+            { style: { display: this.state.show ? "block" : "none" } },
+            this.state.options.map(function (o, i) {
+              var index = _this2.state.selected.indexOf(o);
+              var checked = index !== -1;
+              return React.createElement(
+                "div",
+                { key: o, onClick: function onClick() {
+                    return _this2.changeOptions(o, index);
+                  } },
+                React.createElement(FontAwesomeIcon, { icon: [checked ? "fas" : "far", checked ? "check-circle" : "circle"], color: "#3b5bdb" }),
+                "\xA0",
+                o
+              );
+            })
+          )
+        );
+      }
       return React.createElement(
         "div",
         { className: s$1.filterinput },
@@ -1644,11 +1676,10 @@ var Table = function (_React$Component) {
       return false;
     };
 
-    _this.filter2 = function (e) {
+    _this.showFilter = function (e) {
       while (e.target.tagName !== "TH") {
         e.target = e.target.parentNode;
       }var col = Number(e.target.dataset.col);
-      console.log(col);
       _this.state.columns[col].filtering = true;
       _this.forceUpdate();
     };
@@ -1761,21 +1792,15 @@ var Table = function (_React$Component) {
                   { style: { minWidth: col.width, maxWidth: col.width }, "data-col": i, key: i },
                   col.sortable && React.createElement(FontAwesomeIcon, { icon: "sort" + (_this2.sortColumn === i ? _this2.sortAsc ? "-up" : "-down" : ""), onClick: _this2.sort }),
                   col.sortable && " ",
-                  col.filtering ? React.createElement(FilterInput, {
-                    placeholder: col.header,
-                    options: _this2.state.data.map(function (o) {
+                  col.filtering ? React.createElement(FilterInput, { placeholder: col.header, options: _this2.state.data.map(function (o) {
                       return o[col.dataField];
-                    }),
-                    onChange: function onChange(f) {
+                    }), onChange: function onChange(f) {
                       return _this2.addFilter(i, f);
-                    },
-                    onClose: function onClose() {
-                      _this2.state.columns[i].filtering = false;
-                      _this2.filterBy(col.dataField, "");
-                    }
-                  }) : col.header,
+                    }, onClose: function onClose() {
+                      return _this2.removeFilter(i);
+                    } }) : col.header,
                   col.filterable && !col.filtering ? " " : null,
-                  col.filterable && !col.filtering ? React.createElement(FontAwesomeIcon, { icon: "filter", onClick: _this2.filter2 }) : null,
+                  col.filterable && !col.filtering ? React.createElement(FontAwesomeIcon, { icon: "filter", onClick: _this2.showFilter }) : null,
                   col.resizable ? React.createElement("span", { className: s.grip }) : null
                 );
               })
@@ -1907,6 +1932,19 @@ var Table = function (_React$Component) {
       );
     }
   }, {
+    key: "addFilter",
+    value: function addFilter(i, f) {
+      this.filters[i] = f;
+      this.filter();
+    }
+  }, {
+    key: "removeFilter",
+    value: function removeFilter(i) {
+      this.state.columns[Number(i)].filtering = false;
+      delete this.filters[i];
+      this.filter();
+    }
+  }, {
     key: "filter",
     value: function filter() {
       var keys = Object.keys(this.filters);
@@ -1933,10 +1971,6 @@ var Table = function (_React$Component) {
                 var key = _step2.value;
 
                 push = push && this.filters[key](this.state.columns[Number(key)].dataFunc(obj));
-                if (obj === this.state.data[0]) {
-                  console.log(this.filters[key]);
-                  console.log(this.state.columns[Number(key)].dataFunc(obj));
-                }
                 if (!push) break;
               }
             } catch (err) {
@@ -1974,37 +2008,6 @@ var Table = function (_React$Component) {
         console.log(subdata);
         this.setState({ subdata1: subdata });
       }
-    }
-  }, {
-    key: "filterBy",
-    value: function filterBy(column, text_to_search, mode) {
-      text_to_search = text_to_search.toLowerCase().trim();
-      if (this.lastSort !== undefined) {
-        this.lastSort.className = "icon-sort";
-        this.lastSort = undefined;
-        this.sortMode = undefined;
-        this.sortColumn = undefined;
-      }
-      if (text_to_search === "") {
-        delete this.filters[column];
-      } else {
-        if (this.filters[column]) {
-          this.filters[column].data = text_to_search;
-        } else {
-          this.filters[column] = {
-            mode: mode || "contains",
-            data: text_to_search
-          };
-        }
-      }
-      this.filter();
-    }
-  }, {
-    key: "addFilter",
-    value: function addFilter(i, f) {
-      console.log("addFilter");
-      this.filters[i] = f;
-      this.filter();
     }
   }, {
     key: "renderData",
@@ -2136,11 +2139,14 @@ Table.defaultProps = {
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
+var faAngleDown = { prefix: 'fas', iconName: 'angle-down', icon: [320, 512, [], "f107", "M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"] };
+var faAngleUp = { prefix: 'fas', iconName: 'angle-up', icon: [320, 512, [], "f106", "M177 159.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 329.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"] };
 var faCheckCircle = { prefix: 'fas', iconName: 'check-circle', icon: [512, 512, [], "f058", "M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"] };
 var faFilter = { prefix: 'fas', iconName: 'filter', icon: [512, 512, [], "f0b0", "M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"] };
 var faSort = { prefix: 'fas', iconName: 'sort', icon: [320, 512, [], "f0dc", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"] };
 var faSortDown = { prefix: 'fas', iconName: 'sort-down', icon: [320, 512, [], "f0dd", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"] };
 var faSortUp = { prefix: 'fas', iconName: 'sort-up', icon: [320, 512, [], "f0de", "M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"] };
+var faTimes = { prefix: 'fas', iconName: 'times', icon: [352, 512, [], "f00d", "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"] };
 
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
@@ -2148,9 +2154,7 @@ var faSortUp = { prefix: 'fas', iconName: 'sort-up', icon: [320, 512, [], "f0de"
  */
 var faCircle$1 = { prefix: 'far', iconName: 'circle', icon: [512, 512, [], "f111", "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"] };
 
-console.log(faCheckCircle);
-
-library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter);
+library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter, faAngleUp, faAngleDown, faTimes);
 
 export { Table, Column };
 //# sourceMappingURL=index.module.js.map

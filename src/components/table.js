@@ -48,15 +48,7 @@ export default class Table extends React.Component {
                   {col.sortable && <FontAwesomeIcon icon={"sort" + (this.sortColumn === i ? (this.sortAsc ? "-up" : "-down") : "")} onClick={this.sort} />}
                   {col.sortable && " "}
                   {col.filtering ? (
-                    <FilterInput
-                      placeholder={col.header}
-                      options={this.state.data.map(o => o[col.dataField])}
-                      onChange={f => this.addFilter(i, f)}
-                      onClose={() => {
-                        this.state.columns[i].filtering = false;
-                        this.filterBy(col.dataField, "");
-                      }}
-                    />
+                    <FilterInput placeholder={col.header} options={this.state.data.map(o => o[col.dataField])} onChange={f => this.addFilter(i, f)} onClose={() => this.removeFilter(i)} />
                   ) : (
                     col.header
                   )}
@@ -202,12 +194,12 @@ export default class Table extends React.Component {
     this.filter();
   }
   removeFilter(i) {
+    this.state.columns[Number(i)].filtering = false;
     delete this.filters[i];
     this.filter();
   }
   filter() {
     var keys = Object.keys(this.filters);
-    console.log(keys);
     if (keys.length === 0) {
       this.setState({ subdata1: null, subdata2: null });
     } else {
@@ -220,7 +212,6 @@ export default class Table extends React.Component {
         }
         if (push) subdata.push(obj);
       }
-      console.log(subdata);
       this.setState({ subdata1: subdata });
     }
   }

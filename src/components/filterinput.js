@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default class FilterInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { options: [], selected: [] };
+    this.state = { options: [], selected: [], show: true };
     props.options.forEach(o => {
       if (this.state.options.indexOf(o) == -1) this.state.options.push(o);
     });
@@ -19,9 +19,9 @@ export default class FilterInput extends React.Component {
       return (
         <div className={s.filterinput}>
           {this.props.placeholder}
-          <FontAwesomeIcon icon="angle-down" />
-          <FontAwesomeIcon icon="times-circle" />
-          <div>
+          <FontAwesomeIcon className={s.button} icon={"angle" + (this.state.show ? "-down" : "-up")} onClick={() => this.setState({ show: !this.state.show })} />
+          <FontAwesomeIcon className={s.button} icon="times" onClick={() => this.onClose()} />
+          <div style={{ display: this.state.show ? "block" : "none" }}>
             {this.state.options.map((o, i) => {
               const index = this.state.selected.indexOf(o);
               const checked = index !== -1;
