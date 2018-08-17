@@ -1,0 +1,23 @@
+.filterinput {
+  position: relative;
+  > div {
+    position: absolute;
+    padding: 0.3rem;
+    width: 100%;
+    z-index: 10;
+    max-height: 100px;
+    background-color: rgba(#fff, 0.85);
+    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);
+    border-radius: 0.4rem;
+    overflow-y: auto;
+    > div {
+      color: #333;
+      text-align: left;
+      transition: background-color 300ms ease-in-out;
+      font-weight: normal;
+      &:hover {
+        background-color: rgba(#000, 0.2);
+      }
+    }
+  }
+}

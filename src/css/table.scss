@@ -16,10 +16,10 @@
   thead {
     display: block;
     min-height: 22px;
-    overflow: hidden;
     box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);
     tr {
       background-color: $headerbgcolor;
+      overflow-x: hidden;
       th {
         font-size: 0.8rem;
         position: relative;
@@ -116,6 +116,9 @@
     white-space: pre-line;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  th {
+    overflow: visible;
   }
   &.small {
     th {

@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 
 export default function Column(props) {
   const { children, ...xprops } = props;
-  if (xprops.numberFormat) xprops.align = "right";
+  if (xprops.numberFormat) {
+    xprops.align = "right";
+    xprops.filterType = "number";
+  }
+  if (xprops.dataFunc === undefined) xprops.dataFunc = o => o[xprops.dataField];
   return xprops;
 }
 

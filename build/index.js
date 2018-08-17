@@ -73,7 +73,13 @@ function Column(props) {
   var children = props.children,
       xprops = objectWithoutProperties(props, ["children"]);
 
-  if (xprops.numberFormat) xprops.align = "right";
+  if (xprops.numberFormat) {
+    xprops.align = "right";
+    xprops.filterType = "number";
+  }
+  if (xprops.dataFunc === undefined) xprops.dataFunc = function (o) {
+    return o[xprops.dataField];
+  };
   return xprops;
 }
 
@@ -123,7 +129,7 @@ function styleInject(css, ref) {
   }
 }
 
-var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    overflow: hidden;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15); }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36; }\n      .package_sittable__1lHHt thead tr th {\n        font-size: 0.8rem;\n        position: relative;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt > div {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border: 1px solid #ccc;\n    border-top: none; }\n    .package_sittable__1lHHt > div tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff; }\n      .package_sittable__1lHHt > div tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt > div tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt > div tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt > div tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt > div tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt > div tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt > div tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt > div .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt > div .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
+var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15); }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36;\n      overflow-x: hidden; }\n      .package_sittable__1lHHt thead tr th {\n        font-size: 0.8rem;\n        position: relative;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt > div {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border: 1px solid #ccc;\n    border-top: none; }\n    .package_sittable__1lHHt > div tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff; }\n      .package_sittable__1lHHt > div tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt > div tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt > div tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt > div tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt > div tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt > div tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt > div tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt > div .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt > div .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt th {\n    overflow: visible; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
 var s = { "sittable": "package_sittable__1lHHt", "active": "package_active__mgXBC", "grip": "package_grip__3vk4p", "highlighted": "package_highlighted__1YUtH", "selected": "package_selected__3oqFx", "info": "package_info__3UY8x", "small": "package_small__3j1R3", "wide": "package_wide__ri8e4" };
 styleInject(css);
 
@@ -1562,6 +1568,72 @@ FontAwesomeIcon.defaultProps = {
 
 var convertCurry = convert.bind(null, React.createElement);
 
+var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n";
+var s$1 = { "filterinput": "filterinput_filterinput__2bhbP" };
+styleInject(css$2);
+
+var FilterInput = function (_React$Component) {
+  inherits(FilterInput, _React$Component);
+
+  function FilterInput(props) {
+    classCallCheck(this, FilterInput);
+
+    var _this = possibleConstructorReturn(this, (FilterInput.__proto__ || Object.getPrototypeOf(FilterInput)).call(this, props));
+
+    _this.changeOptions = function (o, i) {
+      if (i === -1) _this.state.selected.push(o);else _this.state.selected.splice(i, 1);
+      _this.forceUpdate(_this.onChange(function (o) {
+        return _this.state.selected.length === 0 || _this.state.selected.indexOf(o) !== -1;
+      }));
+    };
+
+    _this.state = { options: [], selected: [] };
+    props.options.forEach(function (o) {
+      if (_this.state.options.indexOf(o) == -1) _this.state.options.push(o);
+    });
+    _this.onChange = props.onChange;
+    return _this;
+  }
+
+  createClass(FilterInput, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      if (this.props.filterType === "checkbox") {}
+      return React.createElement(
+        "div",
+        { className: s$1.filterinput },
+        this.props.placeholder,
+        ":",
+        React.createElement(
+          "div",
+          null,
+          this.state.options.map(function (o, i) {
+            var index = _this2.state.selected.indexOf(o);
+            var checked = index !== -1;
+            return React.createElement(
+              "div",
+              { key: o, onClick: function onClick() {
+                  return _this2.changeOptions(o, index);
+                } },
+              React.createElement(FontAwesomeIcon, { icon: [checked ? "fas" : "far", checked ? "check-circle" : "circle"], color: "#3b5bdb" }),
+              "\xA0",
+              o
+            );
+          })
+        )
+      );
+    }
+  }]);
+  return FilterInput;
+}(React.Component);
+
+
+FilterInput.defaultProps = {
+  options: []
+};
+
 var Table = function (_React$Component) {
   inherits(Table, _React$Component);
 
@@ -1576,6 +1648,15 @@ var Table = function (_React$Component) {
       if (t0 - _this.lastClick <= threshold) return true;
       _this.lastClick = t0;
       return false;
+    };
+
+    _this.filter2 = function (e) {
+      while (e.target.tagName !== "TH") {
+        e.target = e.target.parentNode;
+      }var col = Number(e.target.dataset.col);
+      console.log(col);
+      _this.state.columns[col].filtering = true;
+      _this.forceUpdate();
     };
 
     _this.selectionHandler = function (e) {
@@ -1600,7 +1681,7 @@ var Table = function (_React$Component) {
     };
 
     _this.sort = function (e) {
-      while (e.target.tagName !== "svg") {
+      while (e.target.tagName !== "TH") {
         e.target = e.target.parentNode;
       }var col = Number(e.target.dataset.col);
       var data_origin = _this.state.subdata1 || _this.state.data;
@@ -1684,20 +1765,24 @@ var Table = function (_React$Component) {
                 return React.createElement(
                   "th",
                   { style: { minWidth: col.width, maxWidth: col.width }, "data-col": i, key: i },
-                  col.sortable && React.createElement(FontAwesomeIcon, { icon: "sort" + (_this2.sortColumn === i ? _this2.sortAsc ? "-up" : "-down" : ""), "data-col": i, onClick: _this2.sort }),
+                  col.sortable && React.createElement(FontAwesomeIcon, { icon: "sort" + (_this2.sortColumn === i ? _this2.sortAsc ? "-up" : "-down" : ""), onClick: _this2.sort }),
                   col.sortable && " ",
-                  col.filtering ? React.createElement(CloseableInput, {
+                  col.filtering ? React.createElement(FilterInput, {
                     placeholder: col.header,
-                    onChange: function onChange(e) {
-                      return _this2.filterBy(col.dataField, e.target.value);
+                    options: _this2.state.data.map(function (o) {
+                      return o[col.dataField];
+                    }),
+                    onChange: function onChange(f) {
+                      return _this2.addFilter(i, f);
                     },
                     onClose: function onClose() {
                       _this2.state.columns[i].filtering = false;
                       _this2.filterBy(col.dataField, "");
                     }
                   }) : col.header,
-                  col.filterable && !col.filtering ? React.createElement("a", { className: "icon-filter", "data-col": i }) : null,
-                  col.resizable ? React.createElement("span", { className: "grip" }) : null
+                  col.filterable && !col.filtering ? " " : null,
+                  col.filterable && !col.filtering ? React.createElement(FontAwesomeIcon, { icon: "filter", onClick: _this2.filter2 }) : null,
+                  col.resizable ? React.createElement("span", { className: s.grip }) : null
                 );
               })
             )
@@ -1781,7 +1866,8 @@ var Table = function (_React$Component) {
   }, {
     key: "componentDidUpdate",
     value: function componentDidUpdate() {
-      if (this.state.data.length === 0) return;
+      var data = this.state.subdata2 || this.state.subdata1 || this.state.data;
+      if (data.length === 0) return;
       var tr1 = this.header.firstChild;
       var tr2 = this.body.firstChild;
       var scrollWidth = this.divbody.offsetWidth - this.divwidth.offsetWidth;
@@ -1798,12 +1884,10 @@ var Table = function (_React$Component) {
   }, {
     key: "renderTd",
     value: function renderTd(column, object, i) {
-      var val = object[column.dataField] !== undefined ? object[column.dataField] : null;
-      if (column.dataFunc) {
-        val = column.dataFunc(val, object);
-      }
+      var val = column.dataFunc(object);
+      if (val === undefined) val = null;
       if (column.numberFormat && this.numberformats[column.numberFormat]) {
-        if (val === undefined || val === null || val === "") val = "";else val = this.numberformats[column.numberFormat].format(val);
+        if (val === null || val === "") val = "";else val = this.numberformats[column.numberFormat].format(val);
       }
       return React.createElement(
         "td",
@@ -1832,18 +1916,69 @@ var Table = function (_React$Component) {
     key: "filter",
     value: function filter() {
       var keys = Object.keys(this.filters);
-      if (keys.length > 0) {
-        var subdata = [];
-        for (var i = 0; i < this.state.data.length; i++) {
-          var push = true;
-          for (var j = 0; j < keys.length; j++) {
-            push = push && (this.filters[keys[j]].mode === "contains" && ("" + this.state.data[i][keys[j]]).toLowerCase().indexOf(this.filters[keys[j]].data) > -1 || this.filters[keys[j]].mode === "equals" && this.state.data[i][keys[j]].toLowerCase() == this.filters[keys[j]].data);
-          }
-          if (push) subdata.push(this.state.data[i]);
-        }
-        this.setState({ subdata1: subdata });
-      } else {
+      console.log(keys);
+      if (keys.length === 0) {
         this.setState({ subdata1: null, subdata2: null });
+      } else {
+        var subdata = [];
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+          for (var _iterator = this.state.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var obj = _step.value;
+
+            var push = true;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+              for (var _iterator2 = keys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                var key = _step2.value;
+
+                push = push && this.filters[key](this.state.columns[Number(key)].dataFunc(obj));
+                if (obj === this.state.data[0]) {
+                  console.log(this.filters[key]);
+                  console.log(this.state.columns[Number(key)].dataFunc(obj));
+                }
+                if (!push) break;
+              }
+            } catch (err) {
+              _didIteratorError2 = true;
+              _iteratorError2 = err;
+            } finally {
+              try {
+                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                  _iterator2.return();
+                }
+              } finally {
+                if (_didIteratorError2) {
+                  throw _iteratorError2;
+                }
+              }
+            }
+
+            if (push) subdata.push(obj);
+          }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
+          }
+        }
+
+        console.log(subdata);
+        this.setState({ subdata1: subdata });
       }
     }
   }, {
@@ -1868,6 +2003,13 @@ var Table = function (_React$Component) {
           };
         }
       }
+      this.filter();
+    }
+  }, {
+    key: "addFilter",
+    value: function addFilter(i, f) {
+      console.log("addFilter");
+      this.filters[i] = f;
       this.filter();
     }
   }, {
@@ -2000,11 +2142,21 @@ Table.defaultProps = {
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
+var faCheckCircle = { prefix: 'fas', iconName: 'check-circle', icon: [512, 512, [], "f058", "M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"] };
+var faFilter = { prefix: 'fas', iconName: 'filter', icon: [512, 512, [], "f0b0", "M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"] };
 var faSort = { prefix: 'fas', iconName: 'sort', icon: [320, 512, [], "f0dc", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"] };
 var faSortDown = { prefix: 'fas', iconName: 'sort-down', icon: [320, 512, [], "f0dd", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"] };
 var faSortUp = { prefix: 'fas', iconName: 'sort-up', icon: [320, 512, [], "f0de", "M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"] };
 
-library.add(faSort, faSortUp, faSortDown);
+/*!
+ * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+var faCircle$1 = { prefix: 'far', iconName: 'circle', icon: [512, 512, [], "f111", "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"] };
+
+console.log(faCheckCircle);
+
+library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter);
 
 exports.Table = Table;
 exports.Column = Column;

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import s from "./../css/package.scss";
 import cx from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FilterInput from "./filterinput";
 
 export default class Table extends React.Component {
   constructor(props) {
@@ -44,12 +45,13 @@ export default class Table extends React.Component {
             <tr>
               {this.state.columns.map((col, i) => (
                 <th style={{ minWidth: col.width, maxWidth: col.width }} data-col={i} key={i}>
-                  {col.sortable && <FontAwesomeIcon icon={"sort" + (this.sortColumn === i ? (this.sortAsc ? "-up" : "-down") : "")} data-col={i} onClick={this.sort} />}
+                  {col.sortable && <FontAwesomeIcon icon={"sort" + (this.sortColumn === i ? (this.sortAsc ? "-up" : "-down") : "")} onClick={this.sort} />}
                   {col.sortable && " "}
                   {col.filtering ? (
-                    <CloseableInput
+                    <FilterInput
                       placeholder={col.header}
-                      onChange={e => this.filterBy(col.dataField, e.target.value)}
+                      options={this.state.data.map(o => o[col.dataField])}
+                      onChange={f => this.addFilter(i, f)}
                       onClose={() => {
                         this.state.columns[i].filtering = false;
                         this.filterBy(col.dataField, "");
@@ -58,8 +60,9 @@ export default class Table extends React.Component {
                   ) : (
                     col.header
                   )}
-                  {col.filterable && !col.filtering ? <a className="icon-filter" data-col={i} /> : null}
-                  {col.resizable ? <span className="grip" /> : null}
+                  {col.filterable && !col.filtering ? " " : null}
+                  {col.filterable && !col.filtering ? <FontAwesomeIcon icon="filter" onClick={this.showFilter} /> : null}
+                  {col.resizable ? <span className={s.grip} /> : null}
                 </th>
               ))}
             </tr>
@@ -116,7 +119,8 @@ export default class Table extends React.Component {
     this.body.onclick = this.selectionHandler;
   }
   componentDidUpdate() {
-    if (this.state.data.length === 0) return;
+    const data = this.state.subdata2 || this.state.subdata1 || this.state.data;
+    if (data.length === 0) return;
     const tr1 = this.header.firstChild;
     const tr2 = this.body.firstChild;
     const scrollWidth = this.divbody.offsetWidth - this.divwidth.offsetWidth;
@@ -157,12 +161,10 @@ export default class Table extends React.Component {
     this.forceUpdate();
   }
   renderTd(column, object, i) {
-    var val = object[column.dataField] !== undefined ? object[column.dataField] : null;
-    if (column.dataFunc) {
-      val = column.dataFunc(val, object);
-    }
+    var val = column.dataFunc(object);
+    if (val === undefined) val = null;
     if (column.numberFormat && this.numberformats[column.numberFormat]) {
-      if (val === undefined || val === null || val === "") val = "";
+      if (val === null || val === "") val = "";
       else val = this.numberformats[column.numberFormat].format(val);
     }
     return (
@@ -189,46 +191,38 @@ export default class Table extends React.Component {
     this.lastClick = t0;
     return false;
   };
+  showFilter = e => {
+    while (e.target.tagName !== "TH") e.target = e.target.parentNode;
+    var col = Number(e.target.dataset.col);
+    this.state.columns[col].filtering = true;
+    this.forceUpdate();
+  };
+  addFilter(i, f) {
+    this.filters[i] = f;
+    this.filter();
+  }
+  removeFilter(i) {
+    delete this.filters[i];
+    this.filter();
+  }
   filter() {
     var keys = Object.keys(this.filters);
-    if (keys.length > 0) {
-      const subdata = [];
-      for (var i = 0; i < this.state.data.length; i++) {
-        var push = true;
-        for (var j = 0; j < keys.length; j++) {
-          push =
-            push &&
-            ((this.filters[keys[j]].mode === "contains" && ("" + this.state.data[i][keys[j]]).toLowerCase().indexOf(this.filters[keys[j]].data) > -1) ||
-              (this.filters[keys[j]].mode === "equals" && this.state.data[i][keys[j]].toLowerCase() == this.filters[keys[j]].data));
-        }
-        if (push) subdata.push(this.state.data[i]);
-      }
-      this.setState({ subdata1: subdata });
-    } else {
+    console.log(keys);
+    if (keys.length === 0) {
       this.setState({ subdata1: null, subdata2: null });
-    }
-  }
-  filterBy(column, text_to_search, mode) {
-    text_to_search = text_to_search.toLowerCase().trim();
-    if (this.lastSort !== undefined) {
-      this.lastSort.className = "icon-sort";
-      this.lastSort = undefined;
-      this.sortMode = undefined;
-      this.sortColumn = undefined;
-    }
-    if (text_to_search === "") {
-      delete this.filters[column];
     } else {
-      if (this.filters[column]) {
-        this.filters[column].data = text_to_search;
-      } else {
-        this.filters[column] = {
-          mode: mode || "contains",
-          data: text_to_search
-        };
+      const subdata = [];
+      for (let obj of this.state.data) {
+        var push = true;
+        for (let key of keys) {
+          push = push && this.filters[key](this.state.columns[Number(key)].dataFunc(obj));
+          if (!push) break;
+        }
+        if (push) subdata.push(obj);
       }
+      console.log(subdata);
+      this.setState({ subdata1: subdata });
     }
-    this.filter();
   }
   renderData() {
     return this.datax.map((d, i) => this.renderTr(d, i));
@@ -256,7 +250,7 @@ export default class Table extends React.Component {
     this.onClick(this.selectedItem, oid, td.cellIndex, tr);
   };
   sort = e => {
-    while (e.target.tagName !== "svg") e.target = e.target.parentNode;
+    while (e.target.tagName !== "TH") e.target = e.target.parentNode;
     var col = Number(e.target.dataset.col);
     var data_origin = this.state.subdata1 || this.state.data;
     var data_ordered = [];
