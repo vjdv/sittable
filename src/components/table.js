@@ -278,7 +278,7 @@ export default class Table extends React.Component {
       var obj = data[i];
       for (var j = 0; j < this.state.columns.length; j++) {
         if (j > 0) tmp += "\t";
-        var val = obj[this.state.columns[j].dataField];
+        var val = this.state.columns[j].dataFunc(obj);
         tmp += val === undefined || val === null ? "" : val;
       }
     }
