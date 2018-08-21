@@ -17,12 +17,12 @@
     display: block;
     min-height: 22px;
     box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);
+    overflow: hidden;
     tr {
       background-color: $headerbgcolor;
-      overflow-x: hidden;
       th {
-        font-size: 0.8rem;
         position: relative;
+        font-size: 0.8rem;
         font-weight: bold;
         color: $headercolor;
         user-select: none;
@@ -53,17 +53,20 @@
       }
     }
   }
-  > div {
+  .divbody {
     overflow: auto;
     flex: 1;
     min-height: 100px;
     position: relative;
-    border: 1px solid #ccc;
-    border-top: none;
+
+    border-bottom: none;
     tbody {
       font-size: 0.9rem;
       line-height: 15px;
       background-color: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      //border-bottom: 1px solid #ccc;
       tr {
         border-bottom: 1px solid #ccc;
         &:nth-child(odd) {
@@ -119,6 +122,10 @@
   }
   th {
     overflow: visible;
+  }
+  &.flexible {
+    flex: 1;
+    min-height: 1px;
   }
   &.small {
     th {

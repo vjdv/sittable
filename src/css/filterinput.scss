@@ -1,5 +1,4 @@
 .filterinput {
-  position: relative;
   > div {
     position: absolute;
     padding: 0.3rem;
@@ -20,12 +19,23 @@
       }
     }
   }
-}
-.button {
-  margin-left: 0.4rem;
-  color: #ddd;
-  &:hover {
-    cursor: pointer;
+  position: relative;
+  > input {
+    background-color: rgba(#ffffff, 0.05);
+    border-radius: 0.4rem;
+    border: none;
+    width: 100%;
     color: #fff;
+    padding-right: 1rem;
+  }
+  > svg {
+    position: absolute;
+    right: 0.1rem;
+    top: 0.25rem;
+    color: #ddd;
+    &:hover {
+      cursor: pointer;
+      color: #fff;
+    }
   }
 }

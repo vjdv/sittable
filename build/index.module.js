@@ -123,8 +123,8 @@ function styleInject(css, ref) {
   }
 }
 
-var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15); }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36;\n      overflow-x: hidden; }\n      .package_sittable__1lHHt thead tr th {\n        font-size: 0.8rem;\n        position: relative;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt > div {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border: 1px solid #ccc;\n    border-top: none; }\n    .package_sittable__1lHHt > div tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff; }\n      .package_sittable__1lHHt > div tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt > div tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt > div tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt > div tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt > div tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt > div tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt > div tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt > div tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt > div .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt > div .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt th {\n    overflow: visible; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
-var s = { "sittable": "package_sittable__1lHHt", "active": "package_active__mgXBC", "grip": "package_grip__3vk4p", "highlighted": "package_highlighted__1YUtH", "selected": "package_selected__3oqFx", "info": "package_info__3UY8x", "small": "package_small__3j1R3", "wide": "package_wide__ri8e4" };
+var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    overflow: hidden; }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36; }\n      .package_sittable__1lHHt thead tr th {\n        position: relative;\n        font-size: 0.8rem;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt .package_divbody__xLyRg {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border-bottom: none; }\n    .package_sittable__1lHHt .package_divbody__xLyRg tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff;\n      border: 1px solid #ccc;\n      border-top: none; }\n      .package_sittable__1lHHt .package_divbody__xLyRg tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt .package_divbody__xLyRg tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt .package_divbody__xLyRg .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt .package_divbody__xLyRg .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt th {\n    overflow: visible; }\n  .package_sittable__1lHHt.package_flexible__3Lz5j {\n    flex: 1;\n    min-height: 1px; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
+var s = { "sittable": "package_sittable__1lHHt", "active": "package_active__mgXBC", "grip": "package_grip__3vk4p", "divbody": "package_divbody__xLyRg", "highlighted": "package_highlighted__1YUtH", "selected": "package_selected__3oqFx", "info": "package_info__3UY8x", "flexible": "package_flexible__3Lz5j", "small": "package_small__3j1R3", "wide": "package_wide__ri8e4" };
 styleInject(css);
 
 function createCommonjsModule(fn, module) {
@@ -1562,9 +1562,11 @@ FontAwesomeIcon.defaultProps = {
 
 var convertCurry = convert.bind(null, React.createElement);
 
-var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n\n.filterinput_button__BOFcN {\n  margin-left: 0.4rem;\n  color: #ddd; }\n  .filterinput_button__BOFcN:hover {\n    cursor: pointer;\n    color: #fff; }\n";
-var s$1 = { "filterinput": "filterinput_filterinput__2bhbP", "button": "filterinput_button__BOFcN" };
+var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n  .filterinput_filterinput__2bhbP > input {\n    background-color: rgba(255, 255, 255, 0.05);\n    border-radius: 0.4rem;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding-right: 1rem; }\n  .filterinput_filterinput__2bhbP > svg {\n    position: absolute;\n    right: 0.1rem;\n    top: 0.25rem;\n    color: #ddd; }\n    .filterinput_filterinput__2bhbP > svg:hover {\n      cursor: pointer;\n      color: #fff; }\n";
+var s$1 = { "filterinput": "filterinput_filterinput__2bhbP" };
 styleInject(css$2);
+
+var counter$1 = 0;
 
 var FilterInput = function (_React$Component) {
   inherits(FilterInput, _React$Component);
@@ -1573,6 +1575,14 @@ var FilterInput = function (_React$Component) {
     classCallCheck(this, FilterInput);
 
     var _this = possibleConstructorReturn(this, (FilterInput.__proto__ || Object.getPrototypeOf(FilterInput)).call(this, props));
+
+    _this.onChangedInput = function (e) {
+      var val = e.target.value;
+      var strfunc = function strfunc(o) {
+        return val === "" || ("" + o).toLowerCase().indexOf(val.toLowerCase()) !== -1;
+      };
+      _this.onChange(strfunc);
+    };
 
     _this.changeOptions = function (o, i) {
       if (i === -1) _this.state.selected.push(o);else _this.state.selected.splice(i, 1);
@@ -1588,7 +1598,8 @@ var FilterInput = function (_React$Component) {
     _this.filterType = props.filterType;
     _this.onChange = props.onChange;
     _this.onClose = props.onClose;
-    if (_this.state.options.length <= 10) _this.filterType = "checkbox";
+    if (_this.state.options.length <= 10) _this.filterType = "checkboxx";
+    _this.list_id = "sitfilterlist" + ++counter$1;
     return _this;
   }
 
@@ -1630,25 +1641,17 @@ var FilterInput = function (_React$Component) {
       return React.createElement(
         "div",
         { className: s$1.filterinput },
-        this.props.placeholder,
-        ":",
+        React.createElement("input", { list: this.list_id, placeholder: this.props.placeholder, onChange: this.onChangedInput, autoFocus: true }),
         React.createElement(
-          "div",
-          null,
-          this.state.options.map(function (o, i) {
-            var index = _this2.state.selected.indexOf(o);
-            var checked = index !== -1;
-            return React.createElement(
-              "div",
-              { key: o, onClick: function onClick() {
-                  return _this2.changeOptions(o, index);
-                } },
-              React.createElement(FontAwesomeIcon, { icon: [checked ? "fas" : "far", checked ? "check-circle" : "circle"], color: "#3b5bdb" }),
-              "\xA0",
-              o
-            );
+          "datalist",
+          { id: this.list_id },
+          this.state.options.map(function (o) {
+            return React.createElement("option", { key: o, value: o });
           })
-        )
+        ),
+        React.createElement(FontAwesomeIcon, { icon: "times", onClick: function onClick() {
+            return _this2.onClose();
+          } })
       );
     }
   }]);
@@ -1738,6 +1741,18 @@ var Table = function (_React$Component) {
       _this.setState({ subdata2: data_ordered });
     };
 
+    _this.renderNoInfo = function () {
+      return React.createElement(
+        "tr",
+        null,
+        React.createElement(
+          "td",
+          { width: _this.state.tablewidth, style: { textAlign: "center" } },
+          "Sin informaci\xF3n para mostrar"
+        )
+      );
+    };
+
     _this.state = {
       data: [],
       columns: null,
@@ -1774,7 +1789,7 @@ var Table = function (_React$Component) {
       var style = Object.assign({ width: this.state.tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
       return React.createElement(
         "div",
-        { className: classnames(s.sittable, this.props.small && "small", this.props.flexible && "flexible"), style: style },
+        { className: classnames(s.sittable, this.props.small && s.small, this.props.flexible && s.flexible), style: style },
         React.createElement(
           "table",
           null,
@@ -1811,25 +1826,10 @@ var Table = function (_React$Component) {
           "div",
           { ref: function ref(o) {
               return _this2.divbody = o;
-            } },
+            }, className: s.divbody },
           React.createElement("div", { ref: function ref(o) {
               return _this2.divwidth = o;
             }, className: s.wide }),
-          this.datax.length === 0 && this.props.loading !== true && React.createElement(
-            "div",
-            { className: "info" },
-            "Sin informaci\xF3n para mostrar"
-          ),
-          this.props.loading === true && React.createElement(
-            "div",
-            { className: "info" },
-            React.createElement(
-              "span",
-              null,
-              React.createElement("span", { className: "icon-spin5 animate-spin" }),
-              "Espere"
-            )
-          ),
           React.createElement(
             "table",
             { ref: function ref(o) {
@@ -1840,7 +1840,8 @@ var Table = function (_React$Component) {
               { ref: function ref(b) {
                   return _this2.body = b;
                 } },
-              this.renderData()
+              this.renderData(),
+              this.datax.length === 0 && this.renderNoInfo()
             )
           )
         )
@@ -1854,11 +1855,7 @@ var Table = function (_React$Component) {
       var thrzelem;
       var thrzoffs;
       this.header.onmousedown = function (e) {
-        if (e.target.nodeName === "A" && e.target.className === "icon-filter") {
-          var col = e.target.parentElement.dataset.col;
-          _this3.state.columns[col].filtering = true;
-          _this3.forceUpdate();
-        } else if (e.target.nodeName === "SPAN" && e.target.className === "grip") {
+        if (e.target.nodeName === "SPAN" && e.target.className === s.grip) {
           thrzelem = e.target.parentElement;
           thrzoffs = thrzelem.offsetWidth - event.pageX;
         }
@@ -1879,6 +1876,7 @@ var Table = function (_React$Component) {
       });
       this.divbody.onscroll = function (e) {
         _this3.header.scrollLeft = _this3.divbody.scrollLeft;
+        console.log(_this3.header.scrollLeft);
       };
       this.body.onclick = this.selectionHandler;
     }
@@ -1920,12 +1918,11 @@ var Table = function (_React$Component) {
       var _this4 = this;
 
       var classes_array = [];
-      if (object.stb_selected) classes_array.push("selected");
       if (this.highlight(object)) classes_array.push("highlighted");
       var classes_str = classes_array.join(" ");
       return React.createElement(
         "tr",
-        { "data-row": i, key: i, "data-oid": object.stb_oid, className: classes_str, style: {} },
+        { "data-row": i, key: i, "data-oid": object.stb_oid, className: classnames(object.stb_selected && s.selected), style: {} },
         this.state.columns.map(function (column, i) {
           return _this4.renderTd(column, object, i);
         })
@@ -1948,7 +1945,6 @@ var Table = function (_React$Component) {
     key: "filter",
     value: function filter() {
       var keys = Object.keys(this.filters);
-      console.log(keys);
       if (keys.length === 0) {
         this.setState({ subdata1: null, subdata2: null });
       } else {
@@ -2005,7 +2001,6 @@ var Table = function (_React$Component) {
           }
         }
 
-        console.log(subdata);
         this.setState({ subdata1: subdata });
       }
     }
@@ -2142,6 +2137,7 @@ Table.defaultProps = {
 var faAngleDown = { prefix: 'fas', iconName: 'angle-down', icon: [320, 512, [], "f107", "M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"] };
 var faAngleUp = { prefix: 'fas', iconName: 'angle-up', icon: [320, 512, [], "f106", "M177 159.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 329.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"] };
 var faCheckCircle = { prefix: 'fas', iconName: 'check-circle', icon: [512, 512, [], "f058", "M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"] };
+var faCog = { prefix: 'fas', iconName: 'cog', icon: [512, 512, [], "f013", "M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z"] };
 var faFilter = { prefix: 'fas', iconName: 'filter', icon: [512, 512, [], "f0b0", "M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"] };
 var faSort = { prefix: 'fas', iconName: 'sort', icon: [320, 512, [], "f0dc", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"] };
 var faSortDown = { prefix: 'fas', iconName: 'sort-down', icon: [320, 512, [], "f0dd", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"] };
@@ -2154,7 +2150,7 @@ var faTimes = { prefix: 'fas', iconName: 'times', icon: [352, 512, [], "f00d", "
  */
 var faCircle$1 = { prefix: 'far', iconName: 'circle', icon: [512, 512, [], "f111", "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"] };
 
-library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter, faAngleUp, faAngleDown, faTimes);
+library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter, faAngleUp, faAngleDown, faTimes, faCog);
 
 export { Table, Column };
 //# sourceMappingURL=index.module.js.map

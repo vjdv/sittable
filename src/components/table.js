@@ -39,7 +39,7 @@ export default class Table extends React.Component {
     this.selectable = this.props.selectable === true && this.datax.length > 0;
     var style = Object.assign({ width: this.state.tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
     return (
-      <div className={cx(s.sittable, this.props.small && "small", this.props.flexible && "flexible")} style={style}>
+      <div className={cx(s.sittable, this.props.small && s.small, this.props.flexible && s.flexible)} style={style}>
         <table>
           <thead ref={h => (this.header = h)}>
             <tr>
@@ -60,19 +60,13 @@ export default class Table extends React.Component {
             </tr>
           </thead>
         </table>
-        <div ref={o => (this.divbody = o)}>
+        <div ref={o => (this.divbody = o)} className={s.divbody}>
           <div ref={o => (this.divwidth = o)} className={s.wide} />
-          {this.datax.length === 0 && this.props.loading !== true && <div className="info">Sin información para mostrar</div>}
-          {this.props.loading === true && (
-            <div className="info">
-              <span>
-                <span className="icon-spin5 animate-spin" />
-                Espere
-              </span>
-            </div>
-          )}
           <table ref={o => (this.tablebody = o)} width={this.state.tablewidth}>
-            <tbody ref={b => (this.body = b)}>{this.renderData()}</tbody>
+            <tbody ref={b => (this.body = b)}>
+              {this.renderData()}
+              {this.datax.length === 0 && this.renderNoInfo()}
+            </tbody>
           </table>
         </div>
       </div>
@@ -82,11 +76,7 @@ export default class Table extends React.Component {
     var thrzelem;
     var thrzoffs;
     this.header.onmousedown = e => {
-      if (e.target.nodeName === "A" && e.target.className === "icon-filter") {
-        var col = e.target.parentElement.dataset.col;
-        this.state.columns[col].filtering = true;
-        this.forceUpdate();
-      } else if (e.target.nodeName === "SPAN" && e.target.className === "grip") {
+      if (e.target.nodeName === "SPAN" && e.target.className === s.grip) {
         thrzelem = e.target.parentElement;
         thrzoffs = thrzelem.offsetWidth - event.pageX;
       }
@@ -107,6 +97,7 @@ export default class Table extends React.Component {
     });
     this.divbody.onscroll = e => {
       this.header.scrollLeft = this.divbody.scrollLeft;
+      console.log(this.header.scrollLeft);
     };
     this.body.onclick = this.selectionHandler;
   }
@@ -167,11 +158,10 @@ export default class Table extends React.Component {
   }
   renderTr(object, i) {
     const classes_array = [];
-    if (object.stb_selected) classes_array.push("selected");
     if (this.highlight(object)) classes_array.push("highlighted");
     const classes_str = classes_array.join(" ");
     return (
-      <tr data-row={i} key={i} data-oid={object.stb_oid} className={classes_str} style={{}}>
+      <tr data-row={i} key={i} data-oid={object.stb_oid} className={cx(object.stb_selected && s.selected)} style={{}}>
         {this.state.columns.map((column, i) => this.renderTd(column, object, i))}
       </tr>
     );
@@ -270,6 +260,15 @@ export default class Table extends React.Component {
       }
     }
     this.setState({ subdata2: data_ordered });
+  };
+  renderNoInfo = () => {
+    return (
+      <tr>
+        <td width={this.state.tablewidth} style={{ textAlign: "center" }}>
+          Sin información para mostrar
+        </td>
+      </tr>
+    );
   };
   tabularData() {
     var tmp = "";
