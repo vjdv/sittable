@@ -80,6 +80,9 @@ function Column(props) {
   if (xprops.dataFunc === undefined) xprops.dataFunc = function (o) {
     return o[xprops.dataField];
   };
+  if (xprops.styler === undefined) xprops.styler = function (o) {
+    return { textAlign: xprops.align };
+  };
   return xprops;
 }
 
@@ -91,7 +94,8 @@ Column.propTypes = {
   numberFormat: PropTypes.string,
   filterable: PropTypes.bool,
   sortable: PropTypes.bool,
-  resizable: PropTypes.bool
+  resizable: PropTypes.bool,
+  styler: PropTypes.func
 };
 Column.defaultProps = {
   width: 120,
@@ -1912,9 +1916,10 @@ var Table = function (_React$Component) {
       if (column.numberFormat && this.numberformats[column.numberFormat]) {
         if (val === null || val === "") val = "";else val = this.numberformats[column.numberFormat].format(val);
       }
+      var style = column.styler(object);
       return React.createElement(
         "td",
-        { key: i, width: column.width, style: { textAlign: column.align } },
+        { key: i, width: column.width, style: style },
         val
       );
     }
@@ -2136,6 +2141,189 @@ Table.defaultProps = {
   }
 };
 
+var PagedTable = function (_Table) {
+  inherits(PagedTable, _Table);
+
+  function PagedTable(props) {
+    classCallCheck(this, PagedTable);
+
+    var _this = possibleConstructorReturn(this, (PagedTable.__proto__ || Object.getPrototypeOf(PagedTable)).call(this, props));
+
+    _this.prevPage = function () {
+      return _this.page--;
+    };
+
+    _this.nextPage = function () {
+      return _this.page++;
+    };
+
+    _this.firstPage = function () {
+      return _this.page = 1;
+    };
+
+    _this.lastPage = function () {
+      return _this.page = _this.pages;
+    };
+
+    _this.state.page = 1;
+    _this.state.pageSize = props.pageSize || 50;
+    return _this;
+  }
+
+  createClass(PagedTable, [{
+    key: "render",
+    value: function render() {
+      var _this2 = this;
+
+      this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
+      this.selectable = this.props.selectable === true && this.datax.length > 0;
+      var style = Object.assign({ width: this.state.tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
+      this.pages = Math.ceil(this.datax.length / this.state.pageSize);
+      console.log(this.pages);
+      return React.createElement(
+        "div",
+        { className: classnames(s.sittable, this.props.small && s.small, this.props.flexible && s.flexible), style: style },
+        React.createElement(
+          "table",
+          null,
+          React.createElement(
+            "thead",
+            { ref: function ref(h) {
+                return _this2.header = h;
+              } },
+            React.createElement(
+              "tr",
+              null,
+              this.state.columns.map(function (col, i) {
+                return React.createElement(
+                  "th",
+                  { style: { minWidth: col.width, maxWidth: col.width }, "data-col": i, key: i },
+                  col.sortable && React.createElement(FontAwesomeIcon, { icon: "sort" + (_this2.sortColumn === i ? _this2.sortAsc ? "-up" : "-down" : ""), onClick: _this2.sort }),
+                  col.sortable && " ",
+                  col.filtering ? React.createElement(FilterInput, { placeholder: col.header, options: _this2.state.data.map(function (o) {
+                      return o[col.dataField];
+                    }), onChange: function onChange(f) {
+                      return _this2.addFilter(i, f);
+                    }, onClose: function onClose() {
+                      return _this2.removeFilter(i);
+                    } }) : col.header,
+                  col.filterable && !col.filtering ? " " : null,
+                  col.filterable && !col.filtering ? React.createElement(FontAwesomeIcon, { icon: "filter", onClick: _this2.showFilter }) : null,
+                  col.resizable ? React.createElement("span", { className: s.grip }) : null
+                );
+              })
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          { ref: function ref(o) {
+              return _this2.divbody = o;
+            }, className: s.divbody },
+          React.createElement("div", { ref: function ref(o) {
+              return _this2.divwidth = o;
+            }, className: s.wide }),
+          React.createElement(
+            "table",
+            { ref: function ref(o) {
+                return _this2.tablebody = o;
+              }, width: this.state.tablewidth },
+            React.createElement(
+              "tbody",
+              { ref: function ref(b) {
+                  return _this2.body = b;
+                } },
+              this.renderData(this.datax),
+              this.datax.length === 0 && this.renderNoInfo()
+            )
+          )
+        ),
+        React.createElement(
+          "div",
+          null,
+          React.createElement(
+            "button",
+            { onClick: this.firstPage },
+            "<<"
+          ),
+          React.createElement(
+            "button",
+            { onClick: this.prevPage },
+            "<"
+          ),
+          this.page,
+          "/",
+          this.pages,
+          React.createElement(
+            "button",
+            { onClick: this.nextPage },
+            ">"
+          ),
+          React.createElement(
+            "button",
+            { onClick: this.lastPage },
+            ">>"
+          )
+        )
+      );
+    }
+  }, {
+    key: "renderData",
+    value: function renderData(data) {
+      var _this3 = this;
+
+      var subdata = [];
+      var i_index = 1 * (this.state.page - 1) * this.state.pageSize;
+      var f_index = Math.min(this.state.page * this.state.pageSize, data.length - 1);
+      for (var i = i_index; i <= f_index; i++) {
+        subdata.push(data[i]);
+      }
+      return subdata.map(function (o, i) {
+        return _this3.renderTr(o, i);
+      });
+    }
+  }, {
+    key: "pageSize",
+    get: function get$$1() {
+      return this.state.pageSize;
+    },
+    set: function set$$1(pageSize) {
+      this.setState({ pageSize: pageSize });
+    }
+  }, {
+    key: "page",
+    get: function get$$1() {
+      return this.state.page;
+    },
+    set: function set$$1(page) {
+      if (page < 1 || page > this.pages) return;
+      this.setState({ page: page });
+    }
+  }]);
+  return PagedTable;
+}(Table);
+
+
+PagedTable.propTypes = {
+  selectable: PropTypes.bool,
+  flexible: PropTypes.bool,
+  data: PropTypes.array,
+  highlight: PropTypes.func
+};
+PagedTable.defaultProps = {
+  selectable: false,
+  flexible: false,
+  onClick: function onClick() {
+    return undefined;
+  },
+  onChange: function onChange() {
+    return undefined;
+  },
+  highlight: function highlight() {
+    return false;
+  }
+};
+
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -2160,6 +2348,7 @@ library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter, f
 
 exports.Table = Table;
 exports.Column = Column;
+exports.PagedTable = PagedTable;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

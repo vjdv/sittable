@@ -150,8 +150,9 @@ export default class Table extends React.Component {
       if (val === null || val === "") val = "";
       else val = this.numberformats[column.numberFormat].format(val);
     }
+    const style = column.styler(object);
     return (
-      <td key={i} width={column.width} style={{ textAlign: column.align }}>
+      <td key={i} width={column.width} style={style}>
         {val}
       </td>
     );

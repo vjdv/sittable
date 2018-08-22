@@ -8,6 +8,7 @@ export default function Column(props) {
     xprops.filterType = "number";
   }
   if (xprops.dataFunc === undefined) xprops.dataFunc = o => o[xprops.dataField];
+  if (xprops.styler === undefined) xprops.styler = o => ({ textAlign: xprops.align });
   return xprops;
 }
 
@@ -19,7 +20,8 @@ Column.propTypes = {
   numberFormat: PropTypes.string,
   filterable: PropTypes.bool,
   sortable: PropTypes.bool,
-  resizable: PropTypes.bool
+  resizable: PropTypes.bool,
+  styler: PropTypes.func
 };
 Column.defaultProps = {
   width: 120,
