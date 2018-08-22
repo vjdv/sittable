@@ -78,11 +78,8 @@
         &:hover {
           background-color: #e0e0e0;
         }
-        &.highlighted {
-          background-color: #fff5e7;
-        }
         &.selected {
-          background-color: #aaa;
+          background-color: #aaa !important;
         }
         &:last-child {
           border-bottom: none;
