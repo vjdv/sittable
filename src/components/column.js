@@ -1,5 +1,6 @@
-//import React from "react";
+import React from "react";
 import PropTypes from "prop-types";
+import Styler from "./rowstyler";
 
 export default function Column(props) {
   const { children, ...xprops } = props;
@@ -8,6 +9,9 @@ export default function Column(props) {
     xprops.filterType = "number";
   }
   if (xprops.dataFunc === undefined) xprops.dataFunc = o => o[xprops.dataField];
+  React.Children.forEach(props.children, child => {
+    if (child.type === Styler) xprops.styler = Styler(child.props);
+  });
   if (xprops.styler === undefined) xprops.styler = o => ({ textAlign: xprops.align });
   return xprops;
 }
