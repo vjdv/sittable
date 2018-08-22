@@ -2,6 +2,7 @@ import React from "react";
 import Column from "./column";
 import PropTypes from "prop-types";
 import s from "./../css/package.scss";
+import s2 from "./../css/pagedtable.scss";
 import cx from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterInput from "./filterinput";
@@ -50,12 +51,20 @@ export default class PagedTable extends Table {
             </tbody>
           </table>
         </div>
-        <div>
-          <button onClick={this.firstPage}>&lt;&lt;</button>
-          <button onClick={this.prevPage}>&lt;</button>
+        <div className={s2.pagebuttons}>
+          <button onClick={this.firstPage}>
+            <FontAwesomeIcon icon="fast-backward" />
+          </button>
+          <button onClick={this.prevPage}>
+            <FontAwesomeIcon icon="backward" />
+          </button>
           {this.page}/{this.pages}
-          <button onClick={this.nextPage}>&gt;</button>
-          <button onClick={this.lastPage}>&gt;&gt;</button>
+          <button onClick={this.nextPage}>
+            <FontAwesomeIcon icon="forward" />
+          </button>
+          <button onClick={this.lastPage}>
+            <FontAwesomeIcon icon="fast-forward" />
+          </button>
         </div>
       </div>
     );
@@ -89,15 +98,5 @@ export default class PagedTable extends Table {
 }
 
 PagedTable.propTypes = {
-  selectable: PropTypes.bool,
-  flexible: PropTypes.bool,
-  data: PropTypes.array,
-  highlight: PropTypes.func
-};
-PagedTable.defaultProps = {
-  selectable: false,
-  flexible: false,
-  onClick: () => undefined,
-  onChange: () => undefined,
-  highlight: () => false
+  pageSize: PropTypes.number
 };

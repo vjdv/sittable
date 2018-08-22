@@ -3,9 +3,8 @@ import Column from "./components/column";
 import PagedTable from "./components/pagedtable";
 import Styler from "./components/rowstyler";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faSort, faCheckCircle, faSortUp, faSortDown, faFilter, faAngleUp, faAngleDown, faTimes, faCog } from "@fortawesome/free-solid-svg-icons";
-import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import { faSort, faSortUp, faSortDown, faFilter, faBackward, faFastBackward, faForward, faFastForward } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faSort, faCircle, faCheckCircle, faSortUp, faSortDown, faFilter, faAngleUp, faAngleDown, faTimes, faCog);
+library.add(faSort, faSortUp, faSortDown, faFilter, faBackward, faFastBackward, faForward, faFastForward);
 
 export { Table, Column, PagedTable, Styler };
