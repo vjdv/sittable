@@ -6,6 +6,7 @@ import s from "./../css/package.scss";
 import cx from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterInput from "./filterinput";
+import RowStyler from "./rowstyler";
 
 export default class Table extends React.Component {
   constructor(props) {
@@ -25,7 +26,7 @@ export default class Table extends React.Component {
     //Variables públicas
     this.onClick = props.onClick;
     this.onChange = props.onChange;
-    this.highlight = props.highlight;
+    this.rowstylers = [];
     //Formatos para números
     this.numberformats = {
       mount: new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -33,6 +34,10 @@ export default class Table extends React.Component {
       titles: new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }),
       rate: new Intl.NumberFormat("en-US", { minimumFractionDigits: 8, maximumFractionDigits: 8 })
     };
+    //Children parser
+    React.Children.forEach(props.children, child => {
+      if (child.type === RowStyler) this.rowstylers.push(RowStyler(child.props));
+    });
   }
   render() {
     this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
@@ -158,11 +163,12 @@ export default class Table extends React.Component {
     );
   }
   renderTr(object, i) {
-    const classes_array = [];
-    if (this.highlight(object)) classes_array.push("highlighted");
-    const classes_str = classes_array.join(" ");
+    var style = {};
+    for (let styler of this.rowstylers) {
+      style = Object.assign(style, styler(object));
+    }
     return (
-      <tr data-row={i} key={i} data-oid={object.stb_oid} className={cx(object.stb_selected && s.selected)} style={{}}>
+      <tr data-row={i} key={i} data-oid={object.stb_oid} className={cx(object.stb_selected && s.selected)} style={style}>
         {this.state.columns.map((column, i) => this.renderTd(column, object, i))}
       </tr>
     );
