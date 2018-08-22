@@ -67,7 +67,22 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
-//import React from "react";
+function RowStyler(props) {
+  var func = props.func,
+      test = props.test,
+      xprops = objectWithoutProperties(props, ["func", "test"]);
+
+  if (func) return func;
+  if (test === undefined) console.warn("test is required when func is not provided");
+  return function (o) {
+    if (test(o)) return xprops;
+  };
+}
+
+RowStyler.propTypes = {
+  func: PropTypes.func,
+  test: PropTypes.func
+};
 
 function Column(props) {
   var children = props.children,
@@ -80,6 +95,9 @@ function Column(props) {
   if (xprops.dataFunc === undefined) xprops.dataFunc = function (o) {
     return o[xprops.dataField];
   };
+  React.Children.forEach(props.children, function (child) {
+    if (child.type === RowStyler) xprops.styler = RowStyler(child.props);
+  });
   if (xprops.styler === undefined) xprops.styler = function (o) {
     return { textAlign: xprops.align };
   };
@@ -133,8 +151,8 @@ function styleInject(css, ref) {
   }
 }
 
-var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    overflow: hidden; }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36; }\n      .package_sittable__1lHHt thead tr th {\n        position: relative;\n        font-size: 0.8rem;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt .package_divbody__xLyRg {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border-bottom: none; }\n    .package_sittable__1lHHt .package_divbody__xLyRg tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff;\n      border: 1px solid #ccc;\n      border-top: none; }\n      .package_sittable__1lHHt .package_divbody__xLyRg tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr.package_highlighted__1YUtH {\n          background-color: #fff5e7; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr.package_selected__3oqFx {\n          background-color: #aaa; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt .package_divbody__xLyRg tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt .package_divbody__xLyRg .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt .package_divbody__xLyRg .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt th {\n    overflow: visible; }\n  .package_sittable__1lHHt.package_flexible__3Lz5j {\n    flex: 1;\n    min-height: 1px; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
-var s = { "sittable": "package_sittable__1lHHt", "active": "package_active__mgXBC", "grip": "package_grip__3vk4p", "divbody": "package_divbody__xLyRg", "highlighted": "package_highlighted__1YUtH", "selected": "package_selected__3oqFx", "info": "package_info__3UY8x", "flexible": "package_flexible__3Lz5j", "small": "package_small__3j1R3", "wide": "package_wide__ri8e4" };
+var css = ".package_sittable__1lHHt {\n  max-width: 100%;\n  display: flex;\n  flex-flow: column;\n  overflow: hidden;\n  box-sizing: border-box; }\n  .package_sittable__1lHHt * {\n    box-sizing: border-box; }\n  .package_sittable__1lHHt table {\n    border-collapse: collapse;\n    display: block;\n    position: relative;\n    background-color: rgba(0, 0, 0, 0.05); }\n  .package_sittable__1lHHt thead {\n    display: block;\n    min-height: 22px;\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    overflow: hidden; }\n    .package_sittable__1lHHt thead tr {\n      background-color: #1c2b36; }\n      .package_sittable__1lHHt thead tr th {\n        position: relative;\n        font-size: 0.8rem;\n        font-weight: bold;\n        color: #fff;\n        user-select: none;\n        text-align: center;\n        border: 1px solid #ccc; }\n        .package_sittable__1lHHt thead tr th a {\n          color: inherit;\n          text-decoration: none; }\n          .package_sittable__1lHHt thead tr th a:hover {\n            background-color: rgba(0, 0, 0, 0.1);\n            border-radius: 4px; }\n          .package_sittable__1lHHt thead tr th a.package_active__mgXBC {\n            background-color: rgba(0, 0, 0, 0.5); }\n        .package_sittable__1lHHt thead tr th .package_grip__3vk4p {\n          position: absolute;\n          top: 0;\n          right: 0;\n          bottom: 0;\n          width: 4px;\n          cursor: col-resize; }\n          .package_sittable__1lHHt thead tr th .package_grip__3vk4p:hover {\n            background-color: rgba(0, 0, 0, 0.1); }\n  .package_sittable__1lHHt .package_divbody__xLyRg {\n    overflow: auto;\n    flex: 1;\n    min-height: 100px;\n    position: relative;\n    border-bottom: none; }\n    .package_sittable__1lHHt .package_divbody__xLyRg tbody {\n      font-size: 0.9rem;\n      line-height: 15px;\n      background-color: #fff;\n      border: 1px solid #ccc;\n      border-top: none; }\n      .package_sittable__1lHHt .package_divbody__xLyRg tbody tr {\n        border-bottom: 1px solid #ccc; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:nth-child(odd) {\n          background-color: #fafafa; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:nth-child(even) {\n          background-color: #fff; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:hover {\n          background-color: #e0e0e0; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr.package_selected__3oqFx {\n          background-color: #aaa !important; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr:last-child {\n          border-bottom: none; }\n        .package_sittable__1lHHt .package_divbody__xLyRg tbody tr td {\n          transition: min-width 300ms linear, max-width 300ms linear;\n          border-right: 1px solid #ccc; }\n          .package_sittable__1lHHt .package_divbody__xLyRg tbody tr td:last-child {\n            border-right: none; }\n    .package_sittable__1lHHt .package_divbody__xLyRg .package_info__3UY8x {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      text-align: center;\n      padding: 30px 10px;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 1.1rem;\n      display: flex;\n      flex-flow: column;\n      justify-content: center;\n      z-index: 1; }\n      .package_sittable__1lHHt .package_divbody__xLyRg .package_info__3UY8x > * {\n        padding: 10px; }\n  .package_sittable__1lHHt th,\n  .package_sittable__1lHHt td {\n    padding: 5px;\n    white-space: pre-line;\n    overflow: hidden;\n    text-overflow: ellipsis; }\n  .package_sittable__1lHHt.package_flexible__3Lz5j {\n    flex: 1;\n    min-height: 1px; }\n  .package_sittable__1lHHt.package_small__3j1R3 th {\n    font-size: 0.7rem;\n    padding: 0; }\n  .package_sittable__1lHHt.package_small__3j1R3 td {\n    font-size: 0.8rem;\n    padding: 4px 3px; }\n\n.package_wide__ri8e4 {\n  width: 100%;\n  height: 0; }\n";
+var s = { "sittable": "package_sittable__1lHHt", "active": "package_active__mgXBC", "grip": "package_grip__3vk4p", "divbody": "package_divbody__xLyRg", "selected": "package_selected__3oqFx", "info": "package_info__3UY8x", "flexible": "package_flexible__3Lz5j", "small": "package_small__3j1R3", "wide": "package_wide__ri8e4" };
 styleInject(css);
 
 function createCommonjsModule(fn, module) {
@@ -1778,7 +1796,7 @@ var Table = function (_React$Component) {
     //Variables públicas
     _this.onClick = props.onClick;
     _this.onChange = props.onChange;
-    _this.highlight = props.highlight;
+    _this.rowstylers = [];
     //Formatos para números
     _this.numberformats = {
       mount: new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -1786,6 +1804,10 @@ var Table = function (_React$Component) {
       titles: new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }),
       rate: new Intl.NumberFormat("en-US", { minimumFractionDigits: 8, maximumFractionDigits: 8 })
     };
+    //Children parser
+    React.Children.forEach(props.children, function (child) {
+      if (child.type === RowStyler) _this.rowstylers.push(RowStyler(child.props));
+    });
     return _this;
   }
 
@@ -1928,12 +1950,35 @@ var Table = function (_React$Component) {
     value: function renderTr(object, i) {
       var _this4 = this;
 
-      var classes_array = [];
-      if (this.highlight(object)) classes_array.push("highlighted");
-      var classes_str = classes_array.join(" ");
+      var style = {};
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = this.rowstylers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var styler = _step.value;
+
+          style = Object.assign(style, styler(object));
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
       return React.createElement(
         "tr",
-        { "data-row": i, key: i, "data-oid": object.stb_oid, className: classnames(object.stb_selected && s.selected), style: {} },
+        { "data-row": i, key: i, "data-oid": object.stb_oid, className: classnames(object.stb_selected && s.selected), style: style },
         this.state.columns.map(function (column, i) {
           return _this4.renderTd(column, object, i);
         })
@@ -1960,37 +2005,37 @@ var Table = function (_React$Component) {
         this.setState({ subdata1: null, subdata2: null });
       } else {
         var subdata = [];
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
 
         try {
-          for (var _iterator = this.state.data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var obj = _step.value;
+          for (var _iterator2 = this.state.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var obj = _step2.value;
 
             var push = true;
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-              for (var _iterator2 = keys[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                var key = _step2.value;
+              for (var _iterator3 = keys[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                var key = _step3.value;
 
                 push = push && this.filters[key](this.state.columns[Number(key)].dataFunc(obj));
                 if (!push) break;
               }
             } catch (err) {
-              _didIteratorError2 = true;
-              _iteratorError2 = err;
+              _didIteratorError3 = true;
+              _iteratorError3 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                  _iterator2.return();
+                if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                  _iterator3.return();
                 }
               } finally {
-                if (_didIteratorError2) {
-                  throw _iteratorError2;
+                if (_didIteratorError3) {
+                  throw _iteratorError3;
                 }
               }
             }
@@ -1998,16 +2043,16 @@ var Table = function (_React$Component) {
             if (push) subdata.push(obj);
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
+            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+              _iterator2.return();
             }
           } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
+            if (_didIteratorError2) {
+              throw _iteratorError2;
             }
           }
         }
@@ -2141,6 +2186,10 @@ Table.defaultProps = {
   }
 };
 
+var css$3 = ".pagedtable_pagebuttons__1nI-_ {\n  text-align: center; }\n  .pagedtable_pagebuttons__1nI-_ button {\n    border: 0;\n    border-radius: 0.1875rem;\n    padding: 0.375rem;\n    color: rgba(0, 0, 0, 0.6);\n    background: rgba(0, 0, 0, 0.1);\n    margin: 0.1875rem 0.25rem;\n    transition: background 200ms ease-in-out; }\n    .pagedtable_pagebuttons__1nI-_ button:hover {\n      cursor: pointer;\n      background: rgba(0, 0, 0, 0.3);\n      color: #fff; }\n";
+var s2 = { "pagebuttons": "pagedtable_pagebuttons__1nI-_" };
+styleInject(css$3);
+
 var PagedTable = function (_Table) {
   inherits(PagedTable, _Table);
 
@@ -2240,16 +2289,16 @@ var PagedTable = function (_Table) {
         ),
         React.createElement(
           "div",
-          null,
+          { className: s2.pagebuttons },
           React.createElement(
             "button",
             { onClick: this.firstPage },
-            "<<"
+            React.createElement(FontAwesomeIcon, { icon: "fast-backward" })
           ),
           React.createElement(
             "button",
             { onClick: this.prevPage },
-            "<"
+            React.createElement(FontAwesomeIcon, { icon: "backward" })
           ),
           this.page,
           "/",
@@ -2257,12 +2306,12 @@ var PagedTable = function (_Table) {
           React.createElement(
             "button",
             { onClick: this.nextPage },
-            ">"
+            React.createElement(FontAwesomeIcon, { icon: "forward" })
           ),
           React.createElement(
             "button",
             { onClick: this.lastPage },
-            ">>"
+            React.createElement(FontAwesomeIcon, { icon: "fast-forward" })
           )
         )
       );
@@ -2305,50 +2354,28 @@ var PagedTable = function (_Table) {
 
 
 PagedTable.propTypes = {
-  selectable: PropTypes.bool,
-  flexible: PropTypes.bool,
-  data: PropTypes.array,
-  highlight: PropTypes.func
-};
-PagedTable.defaultProps = {
-  selectable: false,
-  flexible: false,
-  onClick: function onClick() {
-    return undefined;
-  },
-  onChange: function onChange() {
-    return undefined;
-  },
-  highlight: function highlight() {
-    return false;
-  }
+  pageSize: PropTypes.number
 };
 
 /*!
  * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
  */
-var faAngleDown = { prefix: 'fas', iconName: 'angle-down', icon: [320, 512, [], "f107", "M143 352.3L7 216.3c-9.4-9.4-9.4-24.6 0-33.9l22.6-22.6c9.4-9.4 24.6-9.4 33.9 0l96.4 96.4 96.4-96.4c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9l-136 136c-9.2 9.4-24.4 9.4-33.8 0z"] };
-var faAngleUp = { prefix: 'fas', iconName: 'angle-up', icon: [320, 512, [], "f106", "M177 159.7l136 136c9.4 9.4 9.4 24.6 0 33.9l-22.6 22.6c-9.4 9.4-24.6 9.4-33.9 0L160 255.9l-96.4 96.4c-9.4 9.4-24.6 9.4-33.9 0L7 329.7c-9.4-9.4-9.4-24.6 0-33.9l136-136c9.4-9.5 24.6-9.5 34-.1z"] };
-var faCheckCircle = { prefix: 'fas', iconName: 'check-circle', icon: [512, 512, [], "f058", "M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"] };
-var faCog = { prefix: 'fas', iconName: 'cog', icon: [512, 512, [], "f013", "M444.788 291.1l42.616 24.599c4.867 2.809 7.126 8.618 5.459 13.985-11.07 35.642-29.97 67.842-54.689 94.586a12.016 12.016 0 0 1-14.832 2.254l-42.584-24.595a191.577 191.577 0 0 1-60.759 35.13v49.182a12.01 12.01 0 0 1-9.377 11.718c-34.956 7.85-72.499 8.256-109.219.007-5.49-1.233-9.403-6.096-9.403-11.723v-49.184a191.555 191.555 0 0 1-60.759-35.13l-42.584 24.595a12.016 12.016 0 0 1-14.832-2.254c-24.718-26.744-43.619-58.944-54.689-94.586-1.667-5.366.592-11.175 5.459-13.985L67.212 291.1a193.48 193.48 0 0 1 0-70.199l-42.616-24.599c-4.867-2.809-7.126-8.618-5.459-13.985 11.07-35.642 29.97-67.842 54.689-94.586a12.016 12.016 0 0 1 14.832-2.254l42.584 24.595a191.577 191.577 0 0 1 60.759-35.13V25.759a12.01 12.01 0 0 1 9.377-11.718c34.956-7.85 72.499-8.256 109.219-.007 5.49 1.233 9.403 6.096 9.403 11.723v49.184a191.555 191.555 0 0 1 60.759 35.13l42.584-24.595a12.016 12.016 0 0 1 14.832 2.254c24.718 26.744 43.619 58.944 54.689 94.586 1.667 5.366-.592 11.175-5.459 13.985L444.788 220.9a193.485 193.485 0 0 1 0 70.2zM336 256c0-44.112-35.888-80-80-80s-80 35.888-80 80 35.888 80 80 80 80-35.888 80-80z"] };
+var faBackward = { prefix: 'fas', iconName: 'backward', icon: [512, 512, [], "f04a", "M11.5 280.6l192 160c20.6 17.2 52.5 2.8 52.5-24.6V96c0-27.4-31.9-41.8-52.5-24.6l-192 160c-15.3 12.8-15.3 36.4 0 49.2zm256 0l192 160c20.6 17.2 52.5 2.8 52.5-24.6V96c0-27.4-31.9-41.8-52.5-24.6l-192 160c-15.3 12.8-15.3 36.4 0 49.2z"] };
+var faFastBackward = { prefix: 'fas', iconName: 'fast-backward', icon: [512, 512, [], "f049", "M0 436V76c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v151.9L235.5 71.4C256.1 54.3 288 68.6 288 96v131.9L459.5 71.4C480.1 54.3 512 68.6 512 96v320c0 27.4-31.9 41.7-52.5 24.6L288 285.3V416c0 27.4-31.9 41.7-52.5 24.6L64 285.3V436c0 6.6-5.4 12-12 12H12c-6.6 0-12-5.4-12-12z"] };
+var faFastForward = { prefix: 'fas', iconName: 'fast-forward', icon: [512, 512, [], "f050", "M512 76v360c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12V284.1L276.5 440.6c-20.6 17.2-52.5 2.8-52.5-24.6V284.1L52.5 440.6C31.9 457.8 0 443.4 0 416V96c0-27.4 31.9-41.7 52.5-24.6L224 226.8V96c0-27.4 31.9-41.7 52.5-24.6L448 226.8V76c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12z"] };
 var faFilter = { prefix: 'fas', iconName: 'filter', icon: [512, 512, [], "f0b0", "M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"] };
+var faForward = { prefix: 'fas', iconName: 'forward', icon: [512, 512, [], "f04e", "M500.5 231.4l-192-160C287.9 54.3 256 68.6 256 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2zm-256 0l-192-160C31.9 54.3 0 68.6 0 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2z"] };
 var faSort = { prefix: 'fas', iconName: 'sort', icon: [320, 512, [], "f0dc", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41zm255-105L177 64c-9.4-9.4-24.6-9.4-33.9 0L24 183c-15.1 15.1-4.4 41 17 41h238c21.4 0 32.1-25.9 17-41z"] };
 var faSortDown = { prefix: 'fas', iconName: 'sort-down', icon: [320, 512, [], "f0dd", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"] };
 var faSortUp = { prefix: 'fas', iconName: 'sort-up', icon: [320, 512, [], "f0de", "M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"] };
-var faTimes = { prefix: 'fas', iconName: 'times', icon: [352, 512, [], "f00d", "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"] };
 
-/*!
- * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
- * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
- */
-var faCircle$1 = { prefix: 'far', iconName: 'circle', icon: [512, 512, [], "f111", "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"] };
-
-library.add(faSort, faCircle$1, faCheckCircle, faSortUp, faSortDown, faFilter, faAngleUp, faAngleDown, faTimes, faCog);
+library.add(faSort, faSortUp, faSortDown, faFilter, faBackward, faFastBackward, faForward, faFastForward);
 
 exports.Table = Table;
 exports.Column = Column;
 exports.PagedTable = PagedTable;
+exports.Styler = RowStyler;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
