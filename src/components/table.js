@@ -100,10 +100,7 @@ export default class Table extends React.Component {
         thrzelem = undefined;
       }
     });
-    this.divbody.onscroll = e => {
-      this.header.scrollLeft = this.divbody.scrollLeft;
-      console.log(this.header.scrollLeft);
-    };
+    this.divbody.onscroll = e => (this.header.scrollLeft = this.divbody.scrollLeft);
     this.body.onclick = this.selectionHandler;
   }
   componentDidUpdate() {
