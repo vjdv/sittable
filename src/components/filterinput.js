@@ -8,9 +8,9 @@ export default class FilterInput extends React.Component {
   constructor(props) {
     super(props);
     this.state = { options: [], selected: [], show: true };
-    props.options.forEach(o => {
-      if (this.state.options.indexOf(o) == -1) this.state.options.push(o);
-    });
+    props.options.forEach(o => (this.state.options.indexOf(o) === -1 ? this.state.options.push(o) : undefined));
+    this.state.ocurrences = this.state.options.map(o => o);
+    if (this.state.ocurrences.length > 20) this.state.ocurrences.slice(20, 9999999);
     this.filterType = props.filterType;
     this.onChange = props.onChange;
     this.onClose = props.onClose;
@@ -42,13 +42,8 @@ export default class FilterInput extends React.Component {
     }
     return (
       <div className={s.filterinput}>
-        <input list={this.list_id} placeholder={this.props.placeholder} onChange={this.onChangedInput} autoFocus />
-        <datalist id={this.list_id}>
-          {this.state.options.map(o => (
-            <option key={o} value={o} />
-          ))}
-        </datalist>
-        <FontAwesomeIcon icon="times" onClick={() => this.onClose()} />
+        <input type="search" list={this.list_id} placeholder={this.props.placeholder} onChange={this.onChangedInput} onBlur={this.onBlur} autoFocus />
+        <datalist id={this.list_id}>{this.state.ocurrences.map((o, i) => (i < 20 ? <option key={o} value={o} /> : null))}</datalist>
       </div>
     );
   }
@@ -56,7 +51,13 @@ export default class FilterInput extends React.Component {
     var val = e.target.value;
     const strfunc = o => val === "" || ("" + o).toLowerCase().indexOf(val.toLowerCase()) !== -1;
     const intfunc = o => val === "" || (o !== "" && o >= Number(val));
-    this.onChange(strfunc);
+    const ocurrences = this.state.options.filter(strfunc);
+    if (ocurrences.length > 20) ocurrences.slice(20, 9999999);
+    this.setState({ ocurrences }, () => this.onChange(strfunc));
+  };
+  onBlur = e => {
+    const val = e.target.value;
+    if (val.trim() === "") this.onClose();
   };
   changeOptions = (o, i) => {
     if (i === -1) this.state.selected.push(o);

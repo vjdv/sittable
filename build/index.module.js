@@ -1584,7 +1584,7 @@ FontAwesomeIcon.defaultProps = {
 
 var convertCurry = convert.bind(null, React.createElement);
 
-var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n  .filterinput_filterinput__2bhbP > input {\n    background-color: rgba(255, 255, 255, 0.05);\n    border-radius: 0.4rem;\n    border: none;\n    width: 100%;\n    color: #fff;\n    padding-right: 1rem; }\n  .filterinput_filterinput__2bhbP > svg {\n    position: absolute;\n    right: 0.1rem;\n    top: 0.25rem;\n    color: #ddd; }\n    .filterinput_filterinput__2bhbP > svg:hover {\n      cursor: pointer;\n      color: #fff; }\n";
+var css$2 = ".filterinput_filterinput__2bhbP {\n  position: relative; }\n  .filterinput_filterinput__2bhbP > div {\n    position: absolute;\n    padding: 0.3rem;\n    width: 100%;\n    z-index: 10;\n    max-height: 100px;\n    background-color: rgba(255, 255, 255, 0.85);\n    box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.15);\n    border-radius: 0.4rem;\n    overflow-y: auto; }\n    .filterinput_filterinput__2bhbP > div > div {\n      color: #333;\n      text-align: left;\n      transition: background-color 300ms ease-in-out;\n      font-weight: normal; }\n      .filterinput_filterinput__2bhbP > div > div:hover {\n        background-color: rgba(0, 0, 0, 0.2); }\n  .filterinput_filterinput__2bhbP > input {\n    background-color: rgba(255, 255, 255, 0.05);\n    border-radius: 0.4rem;\n    border: none;\n    width: 100%;\n    color: #fff; }\n  .filterinput_filterinput__2bhbP > svg {\n    position: absolute;\n    right: 0.1rem;\n    top: 0.25rem;\n    color: #ddd; }\n    .filterinput_filterinput__2bhbP > svg:hover {\n      cursor: pointer;\n      color: #fff; }\n";
 var s$1 = { "filterinput": "filterinput_filterinput__2bhbP" };
 styleInject(css$2);
 
@@ -1603,7 +1603,16 @@ var FilterInput = function (_React$Component) {
       var strfunc = function strfunc(o) {
         return val === "" || ("" + o).toLowerCase().indexOf(val.toLowerCase()) !== -1;
       };
-      _this.onChange(strfunc);
+      var ocurrences = _this.state.options.filter(strfunc);
+      if (ocurrences.length > 20) ocurrences.slice(20, 9999999);
+      _this.setState({ ocurrences: ocurrences }, function () {
+        return _this.onChange(strfunc);
+      });
+    };
+
+    _this.onBlur = function (e) {
+      var val = e.target.value;
+      if (val.trim() === "") _this.onClose();
     };
 
     _this.changeOptions = function (o, i) {
@@ -1615,8 +1624,12 @@ var FilterInput = function (_React$Component) {
 
     _this.state = { options: [], selected: [], show: true };
     props.options.forEach(function (o) {
-      if (_this.state.options.indexOf(o) == -1) _this.state.options.push(o);
+      return _this.state.options.indexOf(o) === -1 ? _this.state.options.push(o) : undefined;
     });
+    _this.state.ocurrences = _this.state.options.map(function (o) {
+      return o;
+    });
+    if (_this.state.ocurrences.length > 20) _this.state.ocurrences.slice(20, 9999999);
     _this.filterType = props.filterType;
     _this.onChange = props.onChange;
     _this.onClose = props.onClose;
@@ -1663,17 +1676,14 @@ var FilterInput = function (_React$Component) {
       return React.createElement(
         "div",
         { className: s$1.filterinput },
-        React.createElement("input", { list: this.list_id, placeholder: this.props.placeholder, onChange: this.onChangedInput, autoFocus: true }),
+        React.createElement("input", { type: "search", list: this.list_id, placeholder: this.props.placeholder, onChange: this.onChangedInput, onBlur: this.onBlur, autoFocus: true }),
         React.createElement(
           "datalist",
           { id: this.list_id },
-          this.state.options.map(function (o) {
-            return React.createElement("option", { key: o, value: o });
+          this.state.ocurrences.map(function (o, i) {
+            return i < 20 ? React.createElement("option", { key: o, value: o }) : null;
           })
-        ),
-        React.createElement(FontAwesomeIcon, { icon: "times", onClick: function onClick() {
-            return _this2.onClose();
-          } })
+        )
       );
     }
   }]);
@@ -1901,8 +1911,7 @@ var Table = function (_React$Component) {
         }
       });
       this.divbody.onscroll = function (e) {
-        _this3.header.scrollLeft = _this3.divbody.scrollLeft;
-        console.log(_this3.header.scrollLeft);
+        return _this3.header.scrollLeft = _this3.divbody.scrollLeft;
       };
       this.body.onclick = this.selectionHandler;
     }
