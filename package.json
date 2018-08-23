@@ -1,6 +1,6 @@
 {
   "name": "sittable",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A table component for React",
   "main": "build/index.js",
   "module": "build/index.module.js",
