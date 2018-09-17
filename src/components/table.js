@@ -1,5 +1,4 @@
 import React from "react";
-//import CloseableInput from "./../closeableinput";
 import Column from "./column";
 import PropTypes from "prop-types";
 import s from "./../css/package.scss";
