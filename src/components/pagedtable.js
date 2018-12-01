@@ -89,7 +89,7 @@ export default class PagedTable extends Table {
     for (let i = i_index; i <= f_index; i++) {
       subdata.push(data[i]);
     }
-    return subdata.map((o, i) => this.renderTr(o, i));
+    return subdata.map((o, i) => this.renderRow({ index: o.stb_oid, key: i, style: {} }));
   }
   prevPage = () => this.page--;
   nextPage = () => this.page++;

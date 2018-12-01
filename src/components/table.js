@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterInput from "./filterinput";
 import RowStyler from "./rowstyler";
 
+const iconChecked = { prefix: "far", iconName: "check-square" };
+const iconUnchecked = { prefix: "far", iconName: "square" };
+
 export default class Table extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +28,6 @@ export default class Table extends React.Component {
     //Variables públicas
     this.onClick = props.onClick;
     this.onChange = props.onChange;
-    this.rowstylers = [];
     //Formatos para números
     this.numberformats = {
       mount: new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -33,10 +35,6 @@ export default class Table extends React.Component {
       titles: new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }),
       rate: new Intl.NumberFormat("en-US", { minimumFractionDigits: 8, maximumFractionDigits: 8 })
     };
-    //Children parser
-    React.Children.forEach(props.children, child => {
-      if (child.type === RowStyler) this.rowstylers.push(RowStyler(child.props));
-    });
   }
   render() {
     this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
@@ -169,6 +167,33 @@ export default class Table extends React.Component {
       </tr>
     );
   }
+  renderRow = ({ index, key, style }) => {
+    const o = this.state.data[index];
+    for (let styler of this.state.rowstylers) {
+      style = Object.assign(style, styler(object));
+    }
+    return (
+      <tr key={key} data-row={index} data-oid={o.stb_oid} className={cx(o.stb_selected && s.selected)} style={style}>
+        {this.state.columns.map((column, i) => this.renderCell(column, o, i))}
+      </tr>
+    );
+  };
+  renderCell(column, object, i) {
+    var val = column.dataFunc(object);
+    if (val === undefined) val = null;
+    if (column.numberFormat && this.numberformats[column.numberFormat]) {
+      if (val === null || val === "") val = "";
+      else val = this.numberformats[column.numberFormat].format(val);
+    }
+    const style = column.styler(object);
+    return (
+      <td key={i} width={column.width} style={style}>
+        {column.type === "check" && <FontAwesomeIcon icon={this.isItemSelected(object) ? iconChecked : iconUnchecked} onClick={this.showFilter} />}
+        {val}
+      </td>
+    );
+  }
+  isItemSelected = o => o.stb_selected === true;
   doubleClick = miliseconds => {
     var threshold = miliseconds || 450;
     var t0 = new Date().getTime();
@@ -291,8 +316,10 @@ export default class Table extends React.Component {
     var tablewidth = 0;
     const newstate = {};
     const columns = [];
+    const rowstylers = [];
     React.Children.forEach(props.children, child => {
       if (child.type === Column) columns.push(Column(child.props));
+      else if (child.type === RowStyler) rowstylers.push(RowStyler(child.props));
     });
     if (state.columns === null || state.columns.length !== columns.length) {
       columns.forEach(col => (tablewidth += col.width));
@@ -311,6 +338,7 @@ export default class Table extends React.Component {
       newstate.subdata1 = null;
       newstate.subdata2 = null;
     }
+    newstate.rowstylers = rowstylers;
     return newstate;
   }
 }
