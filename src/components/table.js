@@ -6,6 +6,7 @@ import cx from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterInput from "./filterinput";
 import RowStyler from "./rowstyler";
+import Selectable from "./selectable";
 
 const iconChecked = { prefix: "far", iconName: "check-square" };
 const iconUnchecked = { prefix: "far", iconName: "square" };
@@ -28,6 +29,7 @@ export default class Table extends React.Component {
     //Variables públicas
     this.onClick = props.onClick;
     this.onChange = props.onChange;
+    this.selectionHandler = Selectable.bind(this);
     //Formatos para números
     this.numberformats = {
       mount: new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -98,7 +100,7 @@ export default class Table extends React.Component {
       }
     });
     this.divbody.onscroll = e => (this.header.scrollLeft = this.divbody.scrollLeft);
-    this.body.onclick = this.selectionHandler;
+    this.body.onclick = this.clickHandler;
   }
   componentDidUpdate() {
     const data = this.state.subdata2 || this.state.subdata1 || this.state.data;
@@ -240,23 +242,13 @@ export default class Table extends React.Component {
     this.state.columns[i].width = width;
     this.forceUpdate();
   }
-  selectionHandler = e => {
-    if (this.selectable === false) return;
-    var tr = e.target;
-    var td = null;
-    while (tr != this.body) {
-      if (tr.nodeName === "TD") td = tr;
-      if (tr.nodeName === "TR") break;
-      tr = tr.parentElement;
+  clickHandler = e => {
+    console.log("click");
+    if (this.state.selection_props !== undefined) {
+      console.log("selectionmode");
+      console.log(this.state.selection_props);
+      this.selectionHandler(this.state.selection_props, e, this);
     }
-    const oid = Number(tr.dataset.oid);
-    if (this.selectedIndex !== oid) {
-      this.state.data.forEach((o, i) => (o.stb_selected = i === oid));
-      this.forceUpdate();
-      this.selectedIndex = oid;
-      this.onChange(this.selectedItem, oid, td.cellIndex, tr);
-    }
-    this.onClick(this.selectedItem, oid, td.cellIndex, tr);
   };
   sort = e => {
     while (e.target.tagName !== "TH") e.target = e.target.parentNode;
@@ -320,6 +312,7 @@ export default class Table extends React.Component {
     React.Children.forEach(props.children, child => {
       if (child.type === Column) columns.push(Column(child.props));
       else if (child.type === RowStyler) rowstylers.push(RowStyler(child.props));
+      else if (child.type === Selectable) newstate.selection_props = child.props;
     });
     if (state.columns === null || state.columns.length !== columns.length) {
       columns.forEach(col => (tablewidth += col.width));
