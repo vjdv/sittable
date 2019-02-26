@@ -236,7 +236,7 @@ export default class Table extends React.Component {
     }
   }
   renderData() {
-    return this.datax.map((d, i) => this.renderTr(d, i));
+    return this.datax.map((o, i) => this.renderRow({ index: o.stb_oid, key: i, style: {} }));
   }
   resizeCol(i, width) {
     this.state.columns[i].width = width;

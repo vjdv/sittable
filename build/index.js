@@ -92,11 +92,15 @@ function Column(props) {
     xprops.align = "right";
     xprops.filterType = "number";
   }
+  xprops.editable = false;
   if (xprops.dataFunc === undefined) xprops.dataFunc = function (o) {
     return o[xprops.dataField];
   };
   React.Children.forEach(props.children, function (child) {
     if (child.type === RowStyler) xprops.styler = RowStyler(child.props);
+    if (child.type === Editable) {
+      xprops.editable = child;
+    }
   });
   if (xprops.styler === undefined) xprops.styler = function (o) {
     return { textAlign: xprops.align };
@@ -1701,6 +1705,53 @@ FilterInput.defaultProps = {
   options: []
 };
 
+function Selectable(props, e) {
+  var _this = this;
+
+  console.log("jajaja omega destroyer");
+  var tr = e.target;
+  var td = null;
+  while (tr != this.body) {
+    if (tr.nodeName === "TD") td = tr;
+    if (tr.nodeName === "TR") break;
+    tr = tr.parentElement;
+  }
+  var oid = Number(tr.dataset.oid);
+  this.setState(function (prevState) {
+    if (props.mode === "multiple" && e.ctrlKey) {
+      prevState.data[oid].stb_selected = !prevState.data[oid].stb_selected;
+    } else {
+      prevState.data.forEach(function (o) {
+        return o.stb_selected = false;
+      });
+      prevState.data[oid].stb_selected = true;
+    }
+    return prevState;
+  }, function () {
+    if (_this.props.onChange) {
+      console.warn("Table.onChange method is deprecated and will be deleted on near future, please set onChange on Selectable");
+      _this.onChange(_this.selectedItem, oid, td.cellIndex, tr);
+    }
+    if (props.onChange) {
+      var items = _this.state.data.filter(function (o) {
+        return o.stb_selected;
+      });
+      props.onChange({ items: items, item: items[0] || null });
+    }
+  });
+}
+
+Selectable.propTypes = {
+  mode: PropTypes.oneOf(["single", "multiple"]),
+  onChange: PropTypes.func
+};
+Selectable.defaultProps = {
+  mode: "single"
+};
+
+var iconChecked = { prefix: "far", iconName: "check-square" };
+var iconUnchecked = { prefix: "far", iconName: "square" };
+
 var Table = function (_React$Component) {
   inherits(Table, _React$Component);
 
@@ -1708,6 +1759,50 @@ var Table = function (_React$Component) {
     classCallCheck(this, Table);
 
     var _this = possibleConstructorReturn(this, (Table.__proto__ || Object.getPrototypeOf(Table)).call(this, props));
+
+    _this.renderRow = function (_ref) {
+      var index = _ref.index,
+          key = _ref.key,
+          style = _ref.style;
+
+      var o = _this.state.data[index];
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = _this.state.rowstylers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var styler = _step.value;
+
+          style = Object.assign(style, styler(object));
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return React.createElement(
+        "tr",
+        { key: key, "data-row": index, "data-oid": o.stb_oid, className: classnames(o.stb_selected && s.selected), style: style },
+        _this.state.columns.map(function (column, i) {
+          return _this.renderCell(column, o, i);
+        })
+      );
+    };
+
+    _this.isItemSelected = function (o) {
+      return o.stb_selected === true;
+    };
 
     _this.doubleClick = function (miliseconds) {
       var threshold = miliseconds || 450;
@@ -1725,25 +1820,13 @@ var Table = function (_React$Component) {
       _this.forceUpdate();
     };
 
-    _this.selectionHandler = function (e) {
-      if (_this.selectable === false) return;
-      var tr = e.target;
-      var td = null;
-      while (tr != _this.body) {
-        if (tr.nodeName === "TD") td = tr;
-        if (tr.nodeName === "TR") break;
-        tr = tr.parentElement;
+    _this.clickHandler = function (e) {
+      console.log("click");
+      if (_this.state.selection_props !== undefined) {
+        console.log("selectionmode");
+        console.log(_this.state.selection_props);
+        _this.selectionHandler(_this.state.selection_props, e, _this);
       }
-      var oid = Number(tr.dataset.oid);
-      if (_this.selectedIndex !== oid) {
-        _this.state.data.forEach(function (o, i) {
-          return o.stb_selected = i === oid;
-        });
-        _this.forceUpdate();
-        _this.selectedIndex = oid;
-        _this.onChange(_this.selectedItem, oid, td.cellIndex, tr);
-      }
-      _this.onClick(_this.selectedItem, oid, td.cellIndex, tr);
     };
 
     _this.sort = function (e) {
@@ -1806,7 +1889,7 @@ var Table = function (_React$Component) {
     //Variables públicas
     _this.onClick = props.onClick;
     _this.onChange = props.onChange;
-    _this.rowstylers = [];
+    _this.selectionHandler = Selectable.bind(_this);
     //Formatos para números
     _this.numberformats = {
       mount: new Intl.NumberFormat("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
@@ -1814,10 +1897,6 @@ var Table = function (_React$Component) {
       titles: new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }),
       rate: new Intl.NumberFormat("en-US", { minimumFractionDigits: 8, maximumFractionDigits: 8 })
     };
-    //Children parser
-    React.Children.forEach(props.children, function (child) {
-      if (child.type === RowStyler) _this.rowstylers.push(RowStyler(child.props));
-    });
     return _this;
   }
 
@@ -1919,7 +1998,7 @@ var Table = function (_React$Component) {
       this.divbody.onscroll = function (e) {
         return _this3.header.scrollLeft = _this3.divbody.scrollLeft;
       };
-      this.body.onclick = this.selectionHandler;
+      this.body.onclick = this.clickHandler;
     }
   }, {
     key: "componentDidUpdate",
@@ -1960,27 +2039,27 @@ var Table = function (_React$Component) {
       var _this4 = this;
 
       var style = {};
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator = this.rowstylers[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var styler = _step.value;
+        for (var _iterator2 = this.rowstylers[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var styler = _step2.value;
 
           style = Object.assign(style, styler(object));
         }
       } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
@@ -1991,6 +2070,22 @@ var Table = function (_React$Component) {
         this.state.columns.map(function (column, i) {
           return _this4.renderTd(column, object, i);
         })
+      );
+    }
+  }, {
+    key: "renderCell",
+    value: function renderCell(column, object, i) {
+      var val = column.dataFunc(object);
+      if (val === undefined) val = null;
+      if (column.numberFormat && this.numberformats[column.numberFormat]) {
+        if (val === null || val === "") val = "";else val = this.numberformats[column.numberFormat].format(val);
+      }
+      var style = column.styler(object);
+      return React.createElement(
+        "td",
+        { key: i, width: column.width, style: style },
+        column.type === "check" && React.createElement(FontAwesomeIcon, { icon: this.isItemSelected(object) ? iconChecked : iconUnchecked, onClick: this.showFilter }),
+        val
       );
     }
   }, {
@@ -2014,37 +2109,37 @@ var Table = function (_React$Component) {
         this.setState({ subdata1: null, subdata2: null });
       } else {
         var subdata = [];
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
 
         try {
-          for (var _iterator2 = this.state.data[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var obj = _step2.value;
+          for (var _iterator3 = this.state.data[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var obj = _step3.value;
 
             var push = true;
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
+            var _iteratorNormalCompletion4 = true;
+            var _didIteratorError4 = false;
+            var _iteratorError4 = undefined;
 
             try {
-              for (var _iterator3 = keys[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                var key = _step3.value;
+              for (var _iterator4 = keys[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+                var key = _step4.value;
 
                 push = push && this.filters[key](this.state.columns[Number(key)].dataFunc(obj));
                 if (!push) break;
               }
             } catch (err) {
-              _didIteratorError3 = true;
-              _iteratorError3 = err;
+              _didIteratorError4 = true;
+              _iteratorError4 = err;
             } finally {
               try {
-                if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                  _iterator3.return();
+                if (!_iteratorNormalCompletion4 && _iterator4.return) {
+                  _iterator4.return();
                 }
               } finally {
-                if (_didIteratorError3) {
-                  throw _iteratorError3;
+                if (_didIteratorError4) {
+                  throw _iteratorError4;
                 }
               }
             }
@@ -2052,16 +2147,16 @@ var Table = function (_React$Component) {
             if (push) subdata.push(obj);
           }
         } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
             }
           } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
+            if (_didIteratorError3) {
+              throw _iteratorError3;
             }
           }
         }
@@ -2074,8 +2169,8 @@ var Table = function (_React$Component) {
     value: function renderData() {
       var _this5 = this;
 
-      return this.datax.map(function (d, i) {
-        return _this5.renderTr(d, i);
+      return this.datax.map(function (o, i) {
+        return _this5.renderRow({ index: o.stb_oid, key: i, style: {} });
       });
     }
   }, {
@@ -2144,8 +2239,9 @@ var Table = function (_React$Component) {
       var tablewidth = 0;
       var newstate = {};
       var columns = [];
+      var rowstylers = [];
       React.Children.forEach(props.children, function (child) {
-        if (child.type === Column) columns.push(Column(child.props));
+        if (child.type === Column) columns.push(Column(child.props));else if (child.type === RowStyler) rowstylers.push(RowStyler(child.props));else if (child.type === Selectable) newstate.selection_props = child.props;
       });
       if (state.columns === null || state.columns.length !== columns.length) {
         columns.forEach(function (col) {
@@ -2168,6 +2264,7 @@ var Table = function (_React$Component) {
         newstate.subdata1 = null;
         newstate.subdata2 = null;
       }
+      newstate.rowstylers = rowstylers;
       return newstate;
     }
   }]);
@@ -2337,7 +2434,7 @@ var PagedTable = function (_Table) {
         subdata.push(data[i]);
       }
       return subdata.map(function (o, i) {
-        return _this3.renderTr(o, i);
+        return _this3.renderRow({ index: o.stb_oid, key: i, style: {} });
       });
     }
   }, {
@@ -2379,12 +2476,20 @@ var faSort = { prefix: 'fas', iconName: 'sort', icon: [320, 512, [], "f0dc", "M4
 var faSortDown = { prefix: 'fas', iconName: 'sort-down', icon: [320, 512, [], "f0dd", "M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"] };
 var faSortUp = { prefix: 'fas', iconName: 'sort-up', icon: [320, 512, [], "f0de", "M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"] };
 
-library.add(faSort, faSortUp, faSortDown, faFilter, faBackward, faFastBackward, faForward, faFastForward);
+/*!
+ * Font Awesome Free 5.2.0 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+var faCheckSquare$1 = { prefix: 'far', iconName: 'check-square', icon: [448, 512, [], "f14a", "M400 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V80c0-26.51-21.49-48-48-48zm0 400H48V80h352v352zm-35.864-241.724L191.547 361.48c-4.705 4.667-12.303 4.637-16.97-.068l-90.781-91.516c-4.667-4.705-4.637-12.303.069-16.971l22.719-22.536c4.705-4.667 12.303-4.637 16.97.069l59.792 60.277 141.352-140.216c4.705-4.667 12.303-4.637 16.97.068l22.536 22.718c4.667 4.706 4.637 12.304-.068 16.971z"] };
+var faSquare$1 = { prefix: 'far', iconName: 'square', icon: [448, 512, [], "f0c8", "M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-6 400H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h340c3.3 0 6 2.7 6 6v340c0 3.3-2.7 6-6 6z"] };
+
+library.add(faSort, faSortUp, faSortDown, faFilter, faBackward, faFastBackward, faForward, faFastForward, faCheckSquare$1, faSquare$1);
 
 exports.Table = Table;
 exports.Column = Column;
 exports.PagedTable = PagedTable;
 exports.Styler = RowStyler;
+exports.Selectable = Selectable;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

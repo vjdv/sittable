@@ -8,9 +8,13 @@ export default function Column(props) {
     xprops.align = "right";
     xprops.filterType = "number";
   }
+  xprops.editable = false;
   if (xprops.dataFunc === undefined) xprops.dataFunc = o => o[xprops.dataField];
   React.Children.forEach(props.children, child => {
     if (child.type === Styler) xprops.styler = Styler(child.props);
+    if (child.type === Editable) {
+      xprops.editable = child;
+    }
   });
   if (xprops.styler === undefined) xprops.styler = o => ({ textAlign: xprops.align });
   return xprops;

@@ -21,12 +21,13 @@ function Selectable(props, e) {
       return prevState;
     },
     () => {
-      if (this.onChange) {
-        console.warn("table.onChange method is deprecated and will be deleted on near future, please set onChange on SelectionModel");
+      if (this.props.onChange) {
+        console.warn("Table.onChange method is deprecated and will be deleted on near future, please set onChange on Selectable");
         this.onChange(this.selectedItem, oid, td.cellIndex, tr);
       }
       if (props.onChange) {
-        props.onChange({ items: this.state.data.filter(o => o.stb_selected) });
+        const items = this.state.data.filter(o => o.stb_selected);
+        props.onChange({ items, item: items[0] || null });
       }
     }
   );
