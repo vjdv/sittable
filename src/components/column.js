@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import Styler from "./rowstyler";
 
 export default function Column(props) {
+  /*
   const { children, ...xprops } = props;
   if (xprops.numberFormat) {
-    xprops.align = "right";
+    xprops.align = "right"; 
     xprops.filterType = "number";
   }
   xprops.editable = false;
@@ -17,13 +18,13 @@ export default function Column(props) {
     }
   });
   if (xprops.styler === undefined) xprops.styler = o => ({ textAlign: xprops.align });
-  return xprops;
+  return xprops;*/
 }
 
 Column.propTypes = {
   header: PropTypes.string.isRequired,
   width: PropTypes.number,
-  dataField: PropTypes.string,
+  dataField: PropTypes.string.isRequired,
   dataFunc: PropTypes.func,
   numberFormat: PropTypes.string,
   filterable: PropTypes.bool,
@@ -33,7 +34,6 @@ Column.propTypes = {
 };
 Column.defaultProps = {
   width: 120,
-  dataField: "value",
   align: "left",
   filterable: false,
   sortable: true,

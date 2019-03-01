@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FilterInput from "./filterinput";
 import RowStyler from "./rowstyler";
 import Selectable from "./selectable";
+import { ScrollArea } from "sitcontrols2";
 
 const iconChecked = { prefix: "far", iconName: "check-square" };
 const iconUnchecked = { prefix: "far", iconName: "square" };
@@ -40,14 +41,24 @@ export default class Table extends React.Component {
   }
   render() {
     this.datax = this.state.subdata2 || this.state.subdata1 || this.state.data;
+    var tablewidth = 0;
+    this.columns = [];
+    React.Children.forEach(this.props.children, child => {
+      if (child.type === Column) {
+        const cp = { ...child.props };
+        this.columns.push(cp);
+      } else if (child.type === RowStyler) rowstylers.push(RowStyler(child.props));
+      else if (child.type === Selectable) newstate.selection_props = child.props;
+    });
+    this.columns.forEach(col => (tablewidth += col.width));
     this.selectable = this.props.selectable === true && this.datax.length > 0;
-    var style = Object.assign({ width: this.state.tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
+    var style = Object.assign({ width: tablewidth + 2, marginLeft: "auto", marginRight: "auto" }, this.props.style);
     return (
       <div className={cx(s.sittable, this.props.small && s.small, this.props.flexible && s.flexible)} style={style}>
         <table>
           <thead ref={h => (this.header = h)}>
             <tr>
-              {this.state.columns.map((col, i) => (
+              {this.columns.map((col, i) => (
                 <th style={{ minWidth: col.width, maxWidth: col.width }} data-col={i} key={i}>
                   {col.sortable && <FontAwesomeIcon icon={"sort" + (this.sortColumn === i ? (this.sortAsc ? "-up" : "-down") : "")} onClick={this.sort} />}
                   {col.sortable && " "}
@@ -64,15 +75,17 @@ export default class Table extends React.Component {
             </tr>
           </thead>
         </table>
-        <div ref={o => (this.divbody = o)} className={s.divbody}>
+        <div ref={o => (this.divbody = o)}>
           <div ref={o => (this.divwidth = o)} className={s.wide} />
-          <table ref={o => (this.tablebody = o)} width={this.state.tablewidth}>
+        </div>
+        <ScrollArea className={s.divbody}>
+          <table ref={o => (this.tablebody = o)} width={tablewidth}>
             <tbody ref={b => (this.body = b)}>
               {this.renderData()}
               {this.datax.length === 0 && this.renderNoInfo()}
             </tbody>
           </table>
-        </div>
+        </ScrollArea>
       </div>
     );
   }
@@ -105,7 +118,7 @@ export default class Table extends React.Component {
   componentDidUpdate() {
     const data = this.state.subdata2 || this.state.subdata1 || this.state.data;
     if (data.length === 0) return;
-    const tr1 = this.header.firstChild;
+    /*const tr1 = this.header.firstChild;
     const tr2 = this.body.firstChild;
     const scrollWidth = this.divbody.offsetWidth - this.divwidth.offsetWidth;
     this.tablebody.width = this.state.tablewidth - scrollWidth;
@@ -116,7 +129,7 @@ export default class Table extends React.Component {
       if (i + 1 === bodytds.length) width += scrollWidth;
       headtds[i].style.minWidth = width + "px";
       headtds[i].style.maxWidth = width + "px";
-    });
+    });*/
   }
   get data() {
     return this.state.data;
@@ -144,20 +157,7 @@ export default class Table extends React.Component {
     this.state.data.forEach(o => (o.stb_selected = o.stb_oid === i));
     this.forceUpdate();
   }
-  renderTd(column, object, i) {
-    var val = column.dataFunc(object);
-    if (val === undefined) val = null;
-    if (column.numberFormat && this.numberformats[column.numberFormat]) {
-      if (val === null || val === "") val = "";
-      else val = this.numberformats[column.numberFormat].format(val);
-    }
-    const style = column.styler(object);
-    return (
-      <td key={i} width={column.width} style={style}>
-        {val}
-      </td>
-    );
-  }
+
   renderTr(object, i) {
     var style = {};
     for (let styler of this.rowstylers) {
@@ -165,7 +165,7 @@ export default class Table extends React.Component {
     }
     return (
       <tr data-row={i} key={i} data-oid={object.stb_oid} className={cx(object.stb_selected && s.selected)} style={style}>
-        {this.state.columns.map((column, i) => this.renderTd(column, object, i))}
+        {this.columns.map((column, i) => this.renderTd(column, object, i))}
       </tr>
     );
   }
@@ -176,21 +176,22 @@ export default class Table extends React.Component {
     }
     return (
       <tr key={key} data-row={index} data-oid={o.stb_oid} className={cx(o.stb_selected && s.selected)} style={style}>
-        {this.state.columns.map((column, i) => this.renderCell(column, o, i))}
+        {this.columns.map((column, i) => this.renderCell(column, o, i))}
       </tr>
     );
   };
   renderCell(column, object, i) {
-    var val = column.dataFunc(object);
-    if (val === undefined) val = null;
-    if (column.numberFormat && this.numberformats[column.numberFormat]) {
-      if (val === null || val === "") val = "";
-      else val = this.numberformats[column.numberFormat].format(val);
-    }
-    const style = column.styler(object);
+    if (column.cellRenderer) return column.cellRenderer({ column, object, i });
+    else return this.cellRenderer({ column, object, i });
+  }
+  cellRenderer({ column, object, i }) {
+    var val = object[column.dataField];
+    if (val === undefined || val === null) val = "";
+    if (column.format && val !== "") val = column.format(val);
+    var className = typeof column.className === "function" ? column.className(object) : column.className;
+    var style = typeof column.style === "function" ? column.style(object) : column.style;
     return (
-      <td key={i} width={column.width} style={style}>
-        {column.type === "check" && <FontAwesomeIcon icon={this.isItemSelected(object) ? iconChecked : iconUnchecked} onClick={this.showFilter} />}
+      <td key={i} width={column.width} style={style} className={className}>
         {val}
       </td>
     );
@@ -310,8 +311,7 @@ export default class Table extends React.Component {
     const columns = [];
     const rowstylers = [];
     React.Children.forEach(props.children, child => {
-      if (child.type === Column) columns.push(Column(child.props));
-      else if (child.type === RowStyler) rowstylers.push(RowStyler(child.props));
+      if (child.type === RowStyler) rowstylers.push(RowStyler(child.props));
       else if (child.type === Selectable) newstate.selection_props = child.props;
     });
     if (state.columns === null || state.columns.length !== columns.length) {
